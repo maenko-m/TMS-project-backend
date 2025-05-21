@@ -10,7 +10,7 @@ namespace TmsSolution.Application.Interfaces
 {
     public interface IUserService
     {
-        Task<IEnumerable<UserOutputDto>> GetAllAsync();
+        IQueryable<UserOutputDto> GetAll();
         Task<UserOutputDto> GetByIdAsync(Guid id);
         Task<bool> AddAsync(UserCreateDto userDto);
         Task<bool> UpdateAsync(Guid id, UserUpdateDto userDto);

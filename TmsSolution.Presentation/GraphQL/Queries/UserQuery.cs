@@ -1,4 +1,7 @@
-﻿using TmsSolution.Application.Dtos.User;
+﻿using HotChocolate.Authorization;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using TmsSolution.Application.Dtos.User;
 using TmsSolution.Application.Interfaces;
 
 namespace TmsSolution.Presentation.GraphQL.Queries
@@ -10,12 +13,12 @@ namespace TmsSolution.Presentation.GraphQL.Queries
         [UseProjection]
         [UseFiltering]
         [UseSorting]
-        public async Task<IEnumerable<UserOutputDto>> GetUsers(
+        public IQueryable<UserOutputDto> GetUsers(
             [Service] IUserService userService)
         {
             try
             {
-                return await userService.GetAllAsync();
+                return userService.GetAll();
             }
             catch (Exception ex)
             {
@@ -30,6 +33,29 @@ namespace TmsSolution.Presentation.GraphQL.Queries
             try
             {
                 return await userService.GetByIdAsync(id);
+            }
+            catch (Exception ex)
+            {
+                throw new GraphQLException(new Error(ex.Message));
+            }
+        }
+
+        [Authorize]
+        public async Task<UserOutputDto> Me(
+            ClaimsPrincipal user, 
+            [Service] IUserService userService)
+        {
+            try
+            {
+                var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                ?? user.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+
+                if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
+                {
+                    throw new GraphQLException("User ID not found in token.");
+                }
+
+                return await userService.GetByIdAsync(userId);
             }
             catch (Exception ex)
             {

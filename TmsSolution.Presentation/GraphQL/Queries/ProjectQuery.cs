@@ -11,12 +11,12 @@ namespace TmsSolution.Presentation.GraphQL.Queries
         [UseProjection]
         [UseFiltering]
         [UseSorting]
-        public async Task<IEnumerable<ProjectOutputDto>> GetProjects(
+        public IQueryable<ProjectOutputDto> GetProjects(
             [Service] IProjectService projectService)
         {
             try
             {
-                return await projectService.GetAllAsync();
+                return projectService.GetAll();
             }
             catch (Exception ex)
             {

@@ -12,9 +12,9 @@ namespace TmsSolution.Infrastructure.Data.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync()
+        public IQueryable<User> GetAll()
         {
-            return await _context.Users.ToListAsync();
+            return _context.Users.AsNoTracking();
         }
         public async Task<User> GetByIdAsync(Guid id)
         {
@@ -51,6 +51,13 @@ namespace TmsSolution.Infrastructure.Data.Repositories
         public async Task<bool> ExistsAsync(Guid id)
         {
             return await _context.Users.AnyAsync(u => u.Id == id);
+        }
+
+        public async Task<User> GetByEmailAsync(string email)
+        {
+            return await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == email)
+                ?? throw new Exception($"User with email {email} not found.");
         }
     }
 }

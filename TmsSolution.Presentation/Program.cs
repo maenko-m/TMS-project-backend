@@ -9,6 +9,10 @@ using TmsSolution.Presentation.GraphQL.Queries;
 using TmsSolution.Presentation.GraphQL.Mutations;
 using TmsSolution.Presentation.GraphQL.Types.Project;
 using TmsSolution.Presentation.GraphQL.Types.User;
+using TmsSolution.Infrastructure.Security;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace TmsSolution.Presentation
 {
@@ -17,6 +21,8 @@ namespace TmsSolution.Presentation
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.WebHost.UseUrls("http://0.0.0.0:7265");
 
             builder.Services.AddGraphQLServer()
                 .AddQueryType(d => d.Name("Query"))
@@ -36,7 +42,8 @@ namespace TmsSolution.Presentation
                 .AddType<UserUpdateInputType>()
                 .AddFiltering()
                 .AddSorting()
-                .AddProjections();
+                .AddProjections()
+                .AddAuthorization();
 
 
             builder.Services.AddSingleton<AuditInterceptor>();
@@ -48,18 +55,69 @@ namespace TmsSolution.Presentation
                 options.UseSqlServer(connectionString)
                        .AddInterceptors(auditInterceptor);
             });
+
+            
+
+
+            builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
+
+            var jwtSettings = builder.Configuration
+                .GetSection("Jwt")
+                .Get<JwtSettings>();
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+
+                        ValidIssuer = jwtSettings!.Issuer,
+                        ValidAudience = jwtSettings!.Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings!.Secret)),
+                        ClockSkew = TimeSpan.Zero
+                    };
+                });
+
+
+            builder.Services.AddAuthorization();
+            builder.Services.AddControllers();
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy
+                        .AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
             builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IProjectService, ProjectService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             builder.Services.AddAutoMapper(typeof(ProjectProfile));
             builder.Services.AddAutoMapper(typeof(UserProfile));
 
+            
             var app = builder.Build();
 
             app.MapGet("/", () => "go to /graphql");
 
+            app.UseCors("AllowAll");
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.MapControllers(); 
             app.MapGraphQL("/graphql");
+
 
             app.Run();
         }

@@ -24,10 +24,19 @@ namespace TmsSolution.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<UserOutputDto>> GetAllAsync()
+        public IQueryable<UserOutputDto> GetAll()
         {
-            var users = await _userRepository.GetAllAsync();
-            return _mapper.Map<IEnumerable<UserOutputDto>>(users);
+            return _userRepository.GetAll()
+                .Select(u => new UserOutputDto
+                {
+                    Id = u.Id,
+                    Email = u.Email,
+                    Role = u.Role,
+                    CreatedAt = u.CreatedAt,
+                    UpdatedAt = u.UpdatedAt,
+                    IconBase64 = u.IconBase64,
+                    FullName = u.FirstName + " " + u.LastName
+                });
         }
 
         public async Task<UserOutputDto> GetByIdAsync(Guid id)

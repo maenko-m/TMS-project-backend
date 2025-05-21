@@ -4,7 +4,7 @@ namespace TmsSolution.Infrastructure.Data.Repositories
 {
     public interface IProjectRepository
     {
-        Task<IEnumerable<Project>> GetAllAsync();
+        IQueryable<Project> GetAll();
         Task<Project> GetByIdAsync(Guid id);
         Task<bool> AddAsync(Project project);
         Task<bool> UpdateAsync(Project project);

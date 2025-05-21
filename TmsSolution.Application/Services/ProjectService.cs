@@ -30,10 +30,24 @@ namespace TmsSolution.Application.Services
         //    return _mapper.Map<IEnumerable<ProjectOutputDto>>(accessibleProjects);
         //}
 
-        public async Task<IEnumerable<ProjectOutputDto>> GetAllAsync()
+        public IQueryable<ProjectOutputDto> GetAll()
         {
-            var projects = await _projectRepository.GetAllAsync();
-            return _mapper.Map<IEnumerable<ProjectOutputDto>>(projects);
+            return _projectRepository.GetAll()
+                .Select(p => new ProjectOutputDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    IconBase64 = p.IconBase64,
+                    AccessType = p.AccessType,
+                    CreatedAt = p.CreatedAt,
+                    UpdatedAt = p.UpdatedAt,
+                    OwnerId = p.OwnerId,
+                    OwnerFullName = p.Owner != null ? $"{p.Owner.FirstName} {p.Owner.LastName}" : "",
+                    ProjectUsersCount = p.ProjectUsers.Count,
+                    TestCasesCount = p.TestCases.Count,
+                    DefectsCount = p.Defects.Count
+                });
         }
 
         //public async Task<ProjectOutputDto> GetByIdAsync(Guid id, User user)

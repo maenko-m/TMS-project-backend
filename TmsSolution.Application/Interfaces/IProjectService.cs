@@ -10,7 +10,7 @@ namespace TmsSolution.Application.Interfaces
 {
     public interface IProjectService
     {
-        Task<IEnumerable<ProjectOutputDto>> GetAllAsync();
+        IQueryable<ProjectOutputDto> GetAll();
         Task<ProjectOutputDto> GetByIdAsync(Guid id);
         Task<bool> AddAsync(ProjectCreateDto projectDto);
         Task<bool> UpdateAsync(Guid id, ProjectUpdateDto projectDto);

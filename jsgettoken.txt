@@ -1,0 +1,20 @@
+fetch('http://localhost:7265/api/auth/login', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    email: 'maenko121212@gmail.com',
+    password: 'Maenko2005!Maenko2005!'
+  })
+})
+  .then(res => res.json())
+  .then(data => {
+    if (data.token) {
+      console.log('JWT Token:', data.token);
+      navigator.clipboard.writeText(data.token).then(() => {
+        console.log('Token скопирован в буфер обмена!');
+      });
+    } else {
+      console.error('Ошибка получения токена:', data);
+    }
+  })
+  .catch(err => console.error('Fetch error:', err));

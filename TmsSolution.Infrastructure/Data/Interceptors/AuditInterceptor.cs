@@ -28,7 +28,7 @@ namespace TmsSolution.Infrastructure.Data.Interceptors
 
         private void UpdateTimestamps(DbContextEventData eventData)
         {
-            if (eventData != null)
+            if (eventData == null)
                 return;
 
             // Обработка IAuditable сущностей
