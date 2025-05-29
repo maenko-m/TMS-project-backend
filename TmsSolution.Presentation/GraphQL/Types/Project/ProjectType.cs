@@ -1,4 +1,5 @@
 ﻿using TmsSolution.Application.Dtos.Project;
+using TmsSolution.Presentation.GraphQL.Scalar;
 
 namespace TmsSolution.Presentation.GraphQL.Types.Project
 {
@@ -37,12 +38,12 @@ namespace TmsSolution.Presentation.GraphQL.Types.Project
 
             descriptor
                 .Field(p => p.CreatedAt)
-                .Type<NonNullType<DateTimeType>>()
+                .Type<NonNullType<CustomDateTimeType>>()
                 .Description("The creation date of the project.");
 
             descriptor
                 .Field(p => p.UpdatedAt)
-                .Type<NonNullType<DateTimeType>>()
+                .Type<NonNullType<CustomDateTimeType>>()
                 .Description("The last update date of the project.");
 
             descriptor

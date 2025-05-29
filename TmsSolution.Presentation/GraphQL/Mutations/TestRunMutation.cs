@@ -1,30 +1,22 @@
 ﻿using HotChocolate.Authorization;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using TmsSolution.Application.Dtos.User;
+using TmsSolution.Application.Dtos.TestRun;
 using TmsSolution.Application.Interfaces;
-using TmsSolution.Domain.Entities;
 using TmsSolution.Presentation.Common.Extensions;
 
-namespace TmsSolution.Presentation.GraphQL.Queries
+namespace TmsSolution.Presentation.GraphQL.Mutations
 {
-    [ExtendObjectType("Query")]
-    public class UserQuery
+    [ExtendObjectType("Mutation")]
+    public class TestRunMutation
     {
-        [UsePaging]
-        [UseProjection]
-        [UseFiltering]
-        [UseSorting]
         [Authorize]
-        public IQueryable<UserOutputDto> GetUsers(
-            ClaimsPrincipal user,
-            [Service] IUserService userService)
+        public async Task<bool> CreateTestRun(
+            TestRunCreateDto input,
+            [Service] ITestRunService testRunService)
         {
             try
             {
-                var userId = user.GetUserId();
-
-                return userService.GetAll(userId);
+                return await testRunService.AddAsync(input);
             }
             catch (Exception ex)
             {
@@ -33,16 +25,17 @@ namespace TmsSolution.Presentation.GraphQL.Queries
         }
 
         [Authorize]
-        public async Task<UserOutputDto> GetUserById(
+        public async Task<bool> UpdateTestRun(
             Guid id,
             ClaimsPrincipal user,
-            [Service] IUserService userService)
+            TestRunUpdateDto input,
+            [Service] ITestRunService testRunService)
         {
             try
             {
                 var userId = user.GetUserId();
 
-                return await userService.GetByIdAsync(id, userId);
+                return await testRunService.UpdateAsync(id, input, userId);
             }
             catch (Exception ex)
             {
@@ -50,17 +43,17 @@ namespace TmsSolution.Presentation.GraphQL.Queries
             }
         }
 
-
         [Authorize]
-        public async Task<UserOutputDto> Me(
-            ClaimsPrincipal user, 
-            [Service] IUserService userService)
+        public async Task<bool> DeleteTestRun(
+            Guid id,
+            ClaimsPrincipal user,
+            [Service] ITestRunService testRunService)
         {
             try
             {
                 var userId = user.GetUserId();
 
-                return await userService.GetByIdAsync(userId, userId);
+                return await testRunService.DeleteAsync(id, userId);
             }
             catch (Exception ex)
             {

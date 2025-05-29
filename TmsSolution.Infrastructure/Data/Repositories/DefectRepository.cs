@@ -16,6 +16,7 @@ namespace TmsSolution.Infrastructure.Data.Repositories
         public IQueryable<Defect> GetAll()
         {
             return _context.Defects
+                .Include(d => d.Attachments)
                 .Include(d => d.Project)
                 .AsNoTracking();
         }
@@ -23,6 +24,7 @@ namespace TmsSolution.Infrastructure.Data.Repositories
         public async Task<Defect> GetByIdAsync(Guid id)
         {
             return await _context.Defects
+                .Include(d => d.Attachments)
                 .Include(d => d.Project)
                 .FirstOrDefaultAsync(d => d.Id == id)
                 ?? throw new Exception($"Defect with ID {id} not found."); ;

@@ -48,5 +48,9 @@ namespace TmsSolution.Application.Dtos.TestCase
 
         [JsonValidation]
         public string? CustomFields { get; set; } // JSON
+
+        public List<Guid>? TagIds { get; set; } = new();
+        public List<Guid>? StepIds { get; set; } = new();
+        public List<Guid>? DefectIds { get; set; } = new();
     }
 }

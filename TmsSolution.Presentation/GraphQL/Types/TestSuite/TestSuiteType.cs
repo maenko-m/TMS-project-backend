@@ -1,4 +1,5 @@
 ﻿using TmsSolution.Application.Dtos.TestSuite;
+using TmsSolution.Presentation.GraphQL.Scalar;
 
 namespace TmsSolution.Presentation.GraphQL.Types.TestSuite
 {
@@ -37,12 +38,12 @@ namespace TmsSolution.Presentation.GraphQL.Types.TestSuite
 
             descriptor
                 .Field(t => t.CreatedAt)
-                .Type<NonNullType<DateTimeType>>()
+                .Type<NonNullType<CustomDateTimeType>>()
                 .Description("The date and time when the test suite was created.");
 
             descriptor
                 .Field(t => t.UpdatedAt)
-                .Type<NonNullType<DateTimeType>>()
+                .Type<NonNullType<CustomDateTimeType>>()
                 .Description("The date and time when the test suite was last updated.");
 
             descriptor

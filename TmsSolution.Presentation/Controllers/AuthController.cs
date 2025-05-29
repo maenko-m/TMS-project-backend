@@ -8,7 +8,7 @@ namespace TmsSolution.Presentation.Controllers
     /// Контроллер для обработки операций аутентификации.
     /// </summary>
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/")]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;

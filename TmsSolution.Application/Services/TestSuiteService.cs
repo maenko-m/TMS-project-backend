@@ -65,7 +65,7 @@ namespace TmsSolution.Application.Services
                 .FirstOrDefault(p => p.Id == projectId)
                 ?? throw new Exception("Project not found");
 
-            if (user.Role != UserRole.Admin && project.OwnerId != userId && !project.ProjectUsers.Any(pu => pu.Id == userId))
+            if (user.Role != UserRole.Admin && project.OwnerId != userId && !project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"User does not have access to project with ID {projectId}.");
 
             return _testSuiteRepository
@@ -93,7 +93,7 @@ namespace TmsSolution.Application.Services
 
             var testSuite = await _testSuiteRepository.GetByIdAsync(id);
 
-            if (user.Role != UserRole.Admin && testSuite.Project.OwnerId != userId && !testSuite.Project.ProjectUsers.Any(pu => pu.Id == userId))
+            if (user.Role != UserRole.Admin && testSuite.Project.OwnerId != userId && !testSuite.Project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"User does not have access to test suite with ID {id}.");
 
             return _mapper.Map<TestSuiteOutputDto>(testSuite);
@@ -119,7 +119,7 @@ namespace TmsSolution.Application.Services
 
             var testSuite = await _testSuiteRepository.GetByIdAsync(id);
 
-            if (user.Role != UserRole.Admin && testSuite.Project.OwnerId != userId)
+            if (user.Role != UserRole.Admin && testSuite.Project.OwnerId != userId && !testSuite.Project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"User does not have access to test suite with ID {id}.");
 
             _mapper.Map(testSuiteDto, testSuite);
@@ -136,7 +136,7 @@ namespace TmsSolution.Application.Services
 
             var testSuite = await _testSuiteRepository.GetByIdAsync(id);
 
-            if (user.Role != UserRole.Admin && testSuite.Project.OwnerId != userId)
+            if (user.Role != UserRole.Admin && testSuite.Project.OwnerId != userId && !testSuite.Project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"User does not have access to test suite with ID {id}.");
 
             return await _testSuiteRepository.DeleteAsync(testSuite);

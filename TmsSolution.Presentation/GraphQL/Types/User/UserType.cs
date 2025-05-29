@@ -1,5 +1,6 @@
 ﻿using TmsSolution.Application.Dtos.User;
 using TmsSolution.Domain.Enums;
+using TmsSolution.Presentation.GraphQL.Scalar;
 using TmsSolution.Presentation.GraphQL.Types.Project;
 
 namespace TmsSolution.Presentation.GraphQL.Types.User
@@ -39,12 +40,12 @@ namespace TmsSolution.Presentation.GraphQL.Types.User
 
             descriptor
                 .Field(u => u.CreatedAt)
-                .Type<NonNullType<DateTimeType>>()
+                .Type<NonNullType<CustomDateTimeType>>()
                 .Description("The date and time the user was created.");
 
             descriptor
                 .Field(u => u.UpdatedAt)
-                .Type<NonNullType<DateTimeType>>()
+                .Type<NonNullType<CustomDateTimeType>>()
                 .Description("The date and time the user was last updated.");
         }
     }

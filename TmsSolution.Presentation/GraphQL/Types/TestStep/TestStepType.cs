@@ -1,4 +1,5 @@
 ﻿using TmsSolution.Application.Dtos.TestStep;
+using TmsSolution.Presentation.GraphQL.Scalar;
 
 namespace TmsSolution.Presentation.GraphQL.Types.TestStep
 {
@@ -13,8 +14,8 @@ namespace TmsSolution.Presentation.GraphQL.Types.TestStep
             descriptor.Field(f => f.Description).Type<NonNullType<StringType>>().Description("A description of the test step.");
             descriptor.Field(f => f.ExpectedResult).Type<StringType>().Description("Expected result of the step.");
             descriptor.Field(f => f.Position).Type<NonNullType<IntType>>().Description("The order or position of the step.");
-            descriptor.Field(f => f.CreatedAt).Type<NonNullType<DateTimeType>>().Description("Date and time when the step was created.");
-            descriptor.Field(f => f.UpdatedAt).Type<NonNullType<DateTimeType>>().Description("Date and time when the step was last updated.");
+            descriptor.Field(f => f.CreatedAt).Type<NonNullType<CustomDateTimeType>>().Description("Date and time when the step was created.");
+            descriptor.Field(f => f.UpdatedAt).Type<NonNullType<CustomDateTimeType>>().Description("Date and time when the step was last updated.");
         }
     }
 }

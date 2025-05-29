@@ -44,8 +44,6 @@ namespace TmsSolution.Domain.Entities
 
         public string? Parameters { get; set; } // JSON
 
-        public string? Attachments { get; set; } // JSON 
-
         public string? CustomFields { get; set; } // JSON
 
         public List<Tag> Tags { get; set; } = new();
@@ -54,5 +52,6 @@ namespace TmsSolution.Domain.Entities
         public List<TestRunTestCase> TestRunTestCases { get; set; } = new();
         public List<Defect> Defects { get; set; } = new();
         public List<TestPlanTestCase> TestPlanTestCases { get; set; } = new();
+        public List<Attachment> Attachments { get; set; } = new();
     }
 }

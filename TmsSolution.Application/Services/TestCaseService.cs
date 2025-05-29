@@ -23,19 +23,13 @@ namespace TmsSolution.Application.Services
         private readonly ITestCaseRepository _testCaseRepository;
         private readonly IUserRepository _userRepository;
         private readonly IProjectRepository _projectRepository;
-        private readonly ITagRepository _tagRepository;
-        private readonly ITestStepRepository _testStepRepository;
-        private readonly IDefectRepository _defectRepository;
         private readonly IMapper _mapper;
 
-        public TestCaseService(ITestCaseRepository testCaseRepository, IUserRepository userRepository, IProjectRepository projectRepository, ITagRepository tagRepository, ITestStepRepository testStepRepository, IDefectRepository defectRepository, IMapper mapper)
+        public TestCaseService(ITestCaseRepository testCaseRepository, IUserRepository userRepository, IProjectRepository projectRepository,  IMapper mapper)
         {
             _testCaseRepository = testCaseRepository;
             _userRepository = userRepository;
             _projectRepository = projectRepository;
-            _tagRepository = tagRepository;
-            _testStepRepository = testStepRepository;
-            _defectRepository = defectRepository;
             _mapper = mapper;
         }
 
@@ -66,7 +60,7 @@ namespace TmsSolution.Application.Services
                 .FirstOrDefault(p => p.Id == projectId)
                 ?? throw new Exception("Project not found");
 
-            if (user.Role != UserRole.Admin && project.OwnerId != userId)
+            if (user.Role != UserRole.Admin && project.OwnerId != userId && !project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"User does not have access to project with ID {projectId}.");
 
             return _testCaseRepository
@@ -84,7 +78,7 @@ namespace TmsSolution.Application.Services
 
             var testCase = await _testCaseRepository.GetByIdAsync(id);
 
-            if (user.Role != UserRole.Admin && testCase.Project.OwnerId != userId)
+            if (user.Role != UserRole.Admin && testCase.Project.OwnerId != userId && !testCase.Project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"User does not have access to test case with ID {id}.");
 
             return _mapper.Map<TestCaseOutputDto>(testCase);
@@ -95,6 +89,39 @@ namespace TmsSolution.Application.Services
             Validator.Validate(testCaseDto);
 
             var testCase = _mapper.Map<TestCase>(testCaseDto);
+
+            if (testCaseDto.TagIds != null && testCaseDto.TagIds.Count != 0)
+            {
+                testCase.Tags = testCaseDto.TagIds
+                    .Distinct()
+                    .Select(id => new Tag
+                    {
+                        Id = id
+                    })
+                    .ToList();
+            }
+
+            if (testCaseDto.DefectIds != null && testCaseDto.DefectIds.Count != 0)
+            {
+                testCase.Defects = testCaseDto.DefectIds
+                    .Distinct()
+                    .Select(id => new Defect
+                    {
+                        Id = id
+                    })
+                    .ToList();
+            }
+
+            if (testCaseDto.StepIds != null && testCaseDto.StepIds.Count != 0)
+            {
+                testCase.Steps = testCaseDto.StepIds
+                    .Distinct()
+                    .Select(id => new TestStep
+                    {
+                        Id = id
+                    })
+                    .ToList();
+            }
 
             return await _testCaseRepository.AddAsync(testCase);
         }
@@ -110,10 +137,61 @@ namespace TmsSolution.Application.Services
 
             var testCase = await _testCaseRepository.GetByIdAsync(id);
 
-            if (user.Role != UserRole.Admin && testCase.Project.OwnerId != userId)
+            if (user.Role != UserRole.Admin && testCase.Project.OwnerId != userId && !testCase.Project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"User does not have access to test case with ID {id}.");
 
             _mapper.Map(testCaseDto, testCase);
+
+            if (testCaseDto.TagIds != null && testCaseDto.TagIds.Count != 0)
+            {
+                var currentTagIds = testCase.Tags.Select(t => t.Id).ToList();
+                var incomingTagIds = testCaseDto.TagIds.Distinct().ToList();
+
+                var tagsToRemove = testCase.Tags.Where(t => !incomingTagIds.Contains(t.Id)).ToList();
+                var tagsToAdd = incomingTagIds
+                    .Where(id => !currentTagIds.Contains(id))
+                    .Select(id => new Tag { Id = id })
+                    .ToList();
+
+                foreach (var tag in tagsToRemove)
+                    testCase.Tags.Remove(tag);
+
+                testCase.Tags.AddRange(tagsToAdd);
+            }
+
+            if (testCaseDto.DefectIds != null && testCaseDto.DefectIds.Count != 0)
+            {
+                var currentDefectIds = testCase.Defects.Select(d => d.Id).ToList();
+                var incomingDefectIds = testCaseDto.DefectIds.Distinct().ToList();
+
+                var defectsToRemove = testCase.Defects.Where(d => !incomingDefectIds.Contains(d.Id)).ToList();
+                var defectsToAdd = incomingDefectIds
+                    .Where(id => !currentDefectIds.Contains(id))
+                    .Select(id => new Defect { Id = id })
+                    .ToList();
+
+                foreach (var defect in defectsToRemove)
+                    testCase.Defects.Remove(defect);
+
+                testCase.Defects.AddRange(defectsToAdd);
+            }
+
+            if (testCaseDto.StepIds != null && testCaseDto.StepIds.Count != 0)
+            {
+                var currentStepsIds = testCase.Steps.Select(d => d.Id).ToList();
+                var incomingStepsIds = testCaseDto.StepIds.Distinct().ToList();
+
+                var stepsToRemove = testCase.Steps.Where(d => !incomingStepsIds.Contains(d.Id)).ToList();
+                var stepsToAdd = incomingStepsIds
+                    .Where(id => !currentStepsIds.Contains(id))
+                    .Select(id => new TestStep { Id = id })
+                    .ToList();
+
+                foreach (var step in stepsToRemove)
+                    testCase.Steps.Remove(step);
+
+                testCase.Steps.AddRange(stepsToAdd);
+            }
 
             return await _testCaseRepository.SaveChangesAsync();
         }
@@ -127,86 +205,10 @@ namespace TmsSolution.Application.Services
 
             var testCase = await _testCaseRepository.GetByIdAsync(id);
 
-            if (user.Role != UserRole.Admin && testCase.Project.OwnerId != userId)
+            if (user.Role != UserRole.Admin && testCase.Project.OwnerId != userId && !testCase.Project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"User does not have access to test case with ID {id}.");
 
             return await _testCaseRepository.DeleteAsync(testCase);
-        }
-
-        public async Task<bool> UpdateTestCaseStepsAsync(UpdateTestCaseStepsDto updateTestCaseStepsDto)
-        {
-            var testCase = await _testCaseRepository.GetByIdAsync(updateTestCaseStepsDto.TestCaseId);
-
-            var currentIds = testCase.Steps.Select(s => s.Id).ToList();
-
-            var toRemove = testCase.Steps.Where(s => !updateTestCaseStepsDto.StepIds.Contains(s.Id)).ToList();
-            foreach (var step in toRemove)
-                testCase.Steps.Remove(step);
-
-            var toAdd = updateTestCaseStepsDto.StepIds.Except(currentIds).ToList();
-            if (toAdd.Count != 0)
-            {
-                var stepsToAdd = await _testStepRepository
-                    .GetAll()
-                    .Where(s => toAdd.Contains(s.Id))
-                    .ToListAsync();
-
-                foreach (var step in stepsToAdd)
-                    testCase.Steps.Add(step);
-            }
-
-            return await _testCaseRepository.SaveChangesAsync();
-        }
-
-        public async Task<bool> UpdateTestCaseTagsAsync(UpdateTestCaseTagsDto updateTestCaseTagsDto)
-        {
-            var testCase = await _testCaseRepository.GetByIdAsync(updateTestCaseTagsDto.TestCaseId);
-
-            var currentIds = testCase.Tags.Select(t => t.Id).ToList();
-
-            var toRemove = testCase.Tags.Where(t => !updateTestCaseTagsDto.TagIds.Contains(t.Id)).ToList();
-            foreach (var tag in toRemove)
-                testCase.Tags.Remove(tag);
-
-            var toAdd = updateTestCaseTagsDto.TagIds.Except(currentIds).ToList();
-            if (toAdd.Count != 0)
-            {
-                var tagsToAdd = await _tagRepository 
-                    .GetAll()
-                    .Where(t => toAdd.Contains(t.Id))
-                    .ToListAsync();
-
-                foreach (var tag in tagsToAdd)
-                    testCase.Tags.Add(tag);
-            }
-
-            return await _testCaseRepository.SaveChangesAsync();
-        }
-
-        public async Task<bool> UpdateTestCaseDefectsAsync(UpdateTestCaseDefectsDto updateTestCaseDefectsDto)
-        {
-            var testCase = await _testCaseRepository.GetByIdAsync(updateTestCaseDefectsDto.TestCaseId);
-
-
-            var currentIds = testCase.Defects.Select(d => d.Id).ToList();
-
-            var toRemove = testCase.Defects.Where(d => !updateTestCaseDefectsDto.DefectIds.Contains(d.Id)).ToList();
-            foreach (var defect in toRemove)
-                testCase.Defects.Remove(defect);
-
-            var toAdd = updateTestCaseDefectsDto.DefectIds.Except(currentIds).ToList();
-            if (toAdd.Count != 0)
-            {
-                var defectsToAdd = await _defectRepository
-                    .GetAll()
-                    .Where(d => toAdd.Contains(d.Id))
-                    .ToListAsync();
-
-                foreach (var defect in defectsToAdd)
-                    testCase.Defects.Add(defect);
-            }
-
-            return await _testCaseRepository.SaveChangesAsync();
         }
     }
 }

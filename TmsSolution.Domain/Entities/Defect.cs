@@ -41,8 +41,9 @@ namespace TmsSolution.Domain.Entities
         [ForeignKey("CreatedById")]
         public User CreatedBy { get; set; }
 
-        public string? Attachments { get; set; } // JSON 
-
         public string? CustomFields { get; set; } // JSON
+
+
+        public List<Attachment> Attachments { get; set; } = new();
     }
 }

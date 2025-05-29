@@ -1,4 +1,5 @@
 ﻿using TmsSolution.Application.Dtos.TestPlan;
+using TmsSolution.Presentation.GraphQL.Scalar;
 using TmsSolution.Presentation.GraphQL.Types.TestCase;
 
 namespace TmsSolution.Presentation.GraphQL.Types.TestPlan
@@ -13,8 +14,8 @@ namespace TmsSolution.Presentation.GraphQL.Types.TestPlan
             descriptor.Field(f => f.ProjectId).Type<NonNullType<IdType>>().Description("The ID of the project associated with this test plan.");
             descriptor.Field(f => f.Name).Type<NonNullType<StringType>>().Description("The name of the test plan.");
             descriptor.Field(f => f.Description).Type<StringType>().Description("An optional description of the test plan.");
-            descriptor.Field(f => f.CreatedAt).Type<NonNullType<DateTimeType>>().Description("Date and time when the test plan was created.");
-            descriptor.Field(f => f.UpdatedAt).Type<NonNullType<DateTimeType>>().Description("Date and time when the test plan was last updated.");
+            descriptor.Field(f => f.CreatedAt).Type<NonNullType<CustomDateTimeType>>().Description("Date and time when the test plan was created.");
+            descriptor.Field(f => f.UpdatedAt).Type<NonNullType<CustomDateTimeType>>().Description("Date and time when the test plan was last updated.");
 
             descriptor.Field(f => f.TestCases)
                 .Type<ListType<NonNullType<TestCaseType>>>()

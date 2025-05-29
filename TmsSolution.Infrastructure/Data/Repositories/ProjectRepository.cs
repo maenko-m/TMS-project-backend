@@ -16,11 +16,12 @@ namespace TmsSolution.Infrastructure.Data.Repositories
         public IQueryable<Project> GetAll()
         {
             return _context.Projects
-                .AsNoTracking()
                 .Include(p => p.Owner)
                 .Include(p => p.ProjectUsers)
                 .Include(p => p.TestCases)
-                .Include(p => p.Defects);
+                .Include(p => p.Defects)
+                .Include(p => p.Attachments)
+                .AsNoTracking();
         }
 
         public async Task<Project> GetByIdAsync(Guid id)
@@ -30,6 +31,7 @@ namespace TmsSolution.Infrastructure.Data.Repositories
                 .Include(p => p.ProjectUsers)
                 .Include(p => p.TestCases)
                 .Include(p => p.Defects)
+                .Include(p => p.Attachments)
                 .FirstOrDefaultAsync(p => p.Id == id)
                 ?? throw new Exception($"Project with ID {id} not found.");
         }

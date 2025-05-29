@@ -23,6 +23,9 @@ using TmsSolution.Presentation.GraphQL.Scalar;
 using TmsSolution.Infrastructure.Data.Interfaces;
 using TmsSolution.Presentation.GraphQL.Types.TestPlan;
 using TmsSolution.Presentation.GraphQL.Types.Milestone;
+using TmsSolution.Presentation.GraphQL.Types.TestRun;
+using TmsSolution.Presentation.GraphQL.Types.TestRunTestCase;
+using TmsSolution.Presentation.GraphQL.Types.Attachment;
 
 namespace TmsSolution.Presentation
 {
@@ -45,6 +48,8 @@ namespace TmsSolution.Presentation
                 .AddTypeExtension<TestStepQuery>()
                 .AddTypeExtension<MilestoneQuery>()
                 .AddTypeExtension<TestPlanQuery>()
+                .AddTypeExtension<TestRunQuery>()
+                .AddTypeExtension<TestRunTestCaseQuery>()
 
                 .AddMutationType(d => d.Name("Mutation"))
                 .AddTypeExtension<ProjectMutation>()
@@ -56,6 +61,8 @@ namespace TmsSolution.Presentation
                 .AddTypeExtension<TestStepMutation>()
                 .AddTypeExtension<MilestoneMutation>()
                 .AddTypeExtension<TestPlanMutation>()
+                .AddTypeExtension<TestRunMutation>()
+                .AddTypeExtension<TestRunTestCaseMutation>()
 
                 .AddType<ProjectType>()
                 .AddType<ProjectCreateInputType>()
@@ -98,6 +105,16 @@ namespace TmsSolution.Presentation
                 .AddType<MilestoneType>()
                 .AddType<MilestoneCreateInputType>()
                 .AddType<MilestoneUpdateInputType>()
+
+                .AddType<TestRunType>()
+                .AddType<TestRunCreateInputType>()
+                .AddType<TestRunUpdateInputType>()
+
+                .AddType<TestRunTestCaseType>()
+                .AddType<TestRunTestCaseCreateInputType>()
+                .AddType<TestRunTestCaseUpdateInputType>()
+
+                .AddType<AttachmentType>()
 
                 .AddType<EnumType<TestCasePriority>>()
                 .AddType<EnumType<TestCaseSeverity>>()
@@ -171,6 +188,7 @@ namespace TmsSolution.Presentation
             builder.Services.AddScoped<IMilestoneRepository, MilestoneRepository>();
             builder.Services.AddScoped<ITestRunTestCaseRepository, TestRunTestCaseRepository>();
             builder.Services.AddScoped<ITestRunRepository, TestRunRepository>();
+            builder.Services.AddScoped<IAttachmentRepository, AttachmentRepository>();
 
             builder.Services.AddScoped<IProjectService, ProjectService>();
             builder.Services.AddScoped<IUserService, UserService>();
@@ -181,6 +199,7 @@ namespace TmsSolution.Presentation
             builder.Services.AddScoped<IMilestoneService, MilestoneService>();
             builder.Services.AddScoped<ITestRunTestCaseService, TestRunTestCaseService>();
             builder.Services.AddScoped<ITestRunService, TestRunService>();
+            builder.Services.AddScoped<IAttachmentService, AttachmentService>();
 
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
@@ -196,6 +215,7 @@ namespace TmsSolution.Presentation
             builder.Services.AddAutoMapper(typeof(TestPlanProfile));
             builder.Services.AddAutoMapper(typeof(TestRunTestCaseProfile));
             builder.Services.AddAutoMapper(typeof(TestRunProfile));
+            builder.Services.AddAutoMapper(typeof(AttachmentProfile));
 
 
             var app = builder.Build();

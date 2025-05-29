@@ -1,4 +1,5 @@
 ﻿using TmsSolution.Application.Dtos.Milestone;
+using TmsSolution.Presentation.GraphQL.Scalar;
 
 namespace TmsSolution.Presentation.GraphQL.Types.Milestone
 {
@@ -29,11 +30,11 @@ namespace TmsSolution.Presentation.GraphQL.Types.Milestone
                 .Description("Optional due date by which the milestone should be completed.");
 
             descriptor.Field(f => f.CreatedAt)
-                .Type<NonNullType<DateTimeType>>()
+                .Type<NonNullType<CustomDateTimeType>>()
                 .Description("Date and time when the milestone was created.");
 
             descriptor.Field(f => f.UpdatedAt)
-                .Type<NonNullType<DateTimeType>>()
+                .Type<NonNullType<CustomDateTimeType>>()
                 .Description("Date and time when the milestone was last updated.");
 
             descriptor.Field(f => f.TestRunsCount)

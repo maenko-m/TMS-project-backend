@@ -1,66 +1,69 @@
 ﻿using HotChocolate.Authorization;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using TmsSolution.Application.Dtos.User;
+using TmsSolution.Application.Dtos.Attachment;
 using TmsSolution.Application.Interfaces;
+using TmsSolution.Application.Services;
 using TmsSolution.Domain.Entities;
 using TmsSolution.Presentation.Common.Extensions;
 
 namespace TmsSolution.Presentation.GraphQL.Queries
 {
     [ExtendObjectType("Query")]
-    public class UserQuery
+    public class AttachmentQuery
     {
         [UsePaging]
-        [UseProjection]
+        [UseFiltering]
+        [UseSorting]
+        [Authorize(Roles = new[] { "Admin" })]
+        public IQueryable<AttachmentOutputDto> GetAttachments(
+            ClaimsPrincipal user,
+            [Service] IAttachmentService attachmentService)
+        {
+            try
+            {
+                var userId = user.GetUserId();
+
+                return attachmentService.GetAll(userId);
+            }
+            catch (Exception ex)
+            {
+                throw new GraphQLException(new Error(ex.Message));
+            }
+            
+        }
+
+        [UsePaging]
         [UseFiltering]
         [UseSorting]
         [Authorize]
-        public IQueryable<UserOutputDto> GetUsers(
+        public IQueryable<AttachmentOutputDto> GetAttachmentsByProjectId(
+            Guid projectId,
             ClaimsPrincipal user,
-            [Service] IUserService userService)
+            [Service] IAttachmentService attachmentService)
         {
             try
             {
                 var userId = user.GetUserId();
 
-                return userService.GetAll(userId);
+                return attachmentService.GetAllByProjectId(projectId, userId);
             }
             catch (Exception ex)
             {
                 throw new GraphQLException(new Error(ex.Message));
             }
+
         }
 
-        [Authorize]
-        public async Task<UserOutputDto> GetUserById(
+        public async Task<AttachmentOutputDto> GetAttachmentByIdAsync(
             Guid id,
             ClaimsPrincipal user,
-            [Service] IUserService userService)
+            [Service] IAttachmentService attachmentService)
         {
             try
             {
                 var userId = user.GetUserId();
 
-                return await userService.GetByIdAsync(id, userId);
-            }
-            catch (Exception ex)
-            {
-                throw new GraphQLException(new Error(ex.Message));
-            }
-        }
-
-
-        [Authorize]
-        public async Task<UserOutputDto> Me(
-            ClaimsPrincipal user, 
-            [Service] IUserService userService)
-        {
-            try
-            {
-                var userId = user.GetUserId();
-
-                return await userService.GetByIdAsync(userId, userId);
+                return await attachmentService.GetByIdAsync(id, userId);
             }
             catch (Exception ex)
             {

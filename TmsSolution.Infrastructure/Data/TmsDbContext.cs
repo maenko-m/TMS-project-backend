@@ -208,5 +208,5 @@ namespace TmsSolution.Infrastructure.Data
         }
     }
     //dotnet ef database update --startup-project ../TmsSolution.Presentation
-    //dotnet ef migrations add "Some edits" --startup-project ../TmsSolution.Presentation
+    //dotnet ef migrations add "Attachments as list" --startup-project ../TmsSolution.Presentation
 }

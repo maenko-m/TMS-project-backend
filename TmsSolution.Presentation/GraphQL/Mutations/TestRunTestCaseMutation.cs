@@ -1,30 +1,22 @@
 ﻿using HotChocolate.Authorization;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using TmsSolution.Application.Dtos.User;
+using TmsSolution.Application.Dtos.TestRunTestCase;
 using TmsSolution.Application.Interfaces;
-using TmsSolution.Domain.Entities;
 using TmsSolution.Presentation.Common.Extensions;
 
-namespace TmsSolution.Presentation.GraphQL.Queries
+namespace TmsSolution.Presentation.GraphQL.Mutations
 {
-    [ExtendObjectType("Query")]
-    public class UserQuery
+    [ExtendObjectType("Mutation")]
+    public class TestRunTestCaseMutation
     {
-        [UsePaging]
-        [UseProjection]
-        [UseFiltering]
-        [UseSorting]
         [Authorize]
-        public IQueryable<UserOutputDto> GetUsers(
-            ClaimsPrincipal user,
-            [Service] IUserService userService)
+        public async Task<bool> CreateTestRunTestCase(
+            TestRunTestCaseCreateDto input,
+            [Service] ITestRunTestCaseService testRunTestCaseService)
         {
             try
             {
-                var userId = user.GetUserId();
-
-                return userService.GetAll(userId);
+                return await testRunTestCaseService.AddAsync(input);
             }
             catch (Exception ex)
             {
@@ -33,16 +25,17 @@ namespace TmsSolution.Presentation.GraphQL.Queries
         }
 
         [Authorize]
-        public async Task<UserOutputDto> GetUserById(
+        public async Task<bool> UpdateTestRunTestCase(
             Guid id,
             ClaimsPrincipal user,
-            [Service] IUserService userService)
+            TestRunTestCaseUpdateDto input,
+            [Service] ITestRunTestCaseService testRunTestCaseService)
         {
             try
             {
                 var userId = user.GetUserId();
 
-                return await userService.GetByIdAsync(id, userId);
+                return await testRunTestCaseService.UpdateAsync(id, input, userId);
             }
             catch (Exception ex)
             {
@@ -50,17 +43,17 @@ namespace TmsSolution.Presentation.GraphQL.Queries
             }
         }
 
-
         [Authorize]
-        public async Task<UserOutputDto> Me(
-            ClaimsPrincipal user, 
-            [Service] IUserService userService)
+        public async Task<bool> DeleteTestRunTestCase(
+            Guid id,
+            ClaimsPrincipal user,
+            [Service] ITestRunTestCaseService testRunTestCaseService)
         {
             try
             {
                 var userId = user.GetUserId();
 
-                return await userService.GetByIdAsync(userId, userId);
+                return await testRunTestCaseService.DeleteAsync(id, userId);
             }
             catch (Exception ex)
             {

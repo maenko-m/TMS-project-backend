@@ -16,8 +16,5 @@ namespace TmsSolution.Application.Interfaces
         Task<bool> AddAsync(TestCaseCreateDto testCaseDto);
         Task<bool> UpdateAsync(Guid id, TestCaseUpdateDto testCaseDto, Guid userId);
         Task<bool> DeleteAsync(Guid id, Guid userId);
-        Task<bool> UpdateTestCaseTagsAsync(UpdateTestCaseTagsDto updateTestCaseTagsDto);
-        Task<bool> UpdateTestCaseDefectsAsync(UpdateTestCaseDefectsDto updateTestCaseDefectsDto);
-        Task<bool> UpdateTestCaseStepsAsync(UpdateTestCaseStepsDto updateTestCaseStepsDto);
     }
 }

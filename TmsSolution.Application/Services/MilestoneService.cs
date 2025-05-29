@@ -67,7 +67,7 @@ namespace TmsSolution.Application.Services
                 .FirstOrDefault(p => p.Id == projectId)
                 ?? throw new Exception("Project not found");
 
-            if (user.Role != UserRole.Admin && project.OwnerId != userId && !project.ProjectUsers.Any(pu => pu.Id == userId))
+            if (user.Role != UserRole.Admin && project.OwnerId != userId && !project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"User does not have access to project with ID {projectId}.");
 
             return _milestoneRepository
@@ -95,7 +95,7 @@ namespace TmsSolution.Application.Services
 
             var milestone = await _milestoneRepository.GetByIdAsync(id);
 
-            if (user.Role != UserRole.Admin && milestone.Project.OwnerId != userId && !milestone.Project.ProjectUsers.Any(pu => pu.Id == userId))
+            if (user.Role != UserRole.Admin && milestone.Project.OwnerId != userId && !milestone.Project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"Current user does not have access to milestone with ID {id}.");
 
             return _mapper.Map<MilestoneOutputDto>(milestone);
@@ -121,7 +121,7 @@ namespace TmsSolution.Application.Services
 
             var milestone = await _milestoneRepository.GetByIdAsync(id);
 
-            if (user.Role != UserRole.Admin && milestone.Project.OwnerId != userId && !milestone.Project.ProjectUsers.Any(pu => pu.Id == userId))
+            if (user.Role != UserRole.Admin && milestone.Project.OwnerId != userId && !milestone.Project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"Current user does not have access to milestone with ID {id}.");
 
             _mapper.Map(milestoneDto, milestone);
@@ -138,7 +138,7 @@ namespace TmsSolution.Application.Services
 
             var milestone = await _milestoneRepository.GetByIdAsync(id);
 
-            if (user.Role != UserRole.Admin && milestone.Project.OwnerId != userId && !milestone.Project.ProjectUsers.Any(pu => pu.Id == userId))
+            if (user.Role != UserRole.Admin && milestone.Project.OwnerId != userId && !milestone.Project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"Current user does not have access to milestone with ID {id}.");
 
             return await _milestoneRepository.DeleteAsync(milestone);

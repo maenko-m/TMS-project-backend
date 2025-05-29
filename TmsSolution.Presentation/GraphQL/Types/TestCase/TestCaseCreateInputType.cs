@@ -23,6 +23,9 @@ namespace TmsSolution.Presentation.GraphQL.Types.TestCase
             descriptor.Field(f => f.CreatedById).Type<NonNullType<IdType>>().Description("ID of the user who created the test case.");
             descriptor.Field(f => f.Parameters).Type<StringType>().Description("Custom parameters in JSON.");
             descriptor.Field(f => f.CustomFields).Type<StringType>().Description("Custom fields in JSON.");
+            descriptor.Field(f => f.TagIds).Type<ListType<NonNullType<IdType>>>().Description("List of tag IDs to include in the test case.");
+            descriptor.Field(f => f.DefectIds).Type<ListType<NonNullType<IdType>>>().Description("List of defects IDs to include in the test case.");
+            descriptor.Field(f => f.StepIds).Type<ListType<NonNullType<IdType>>>().Description("List of test steps IDs to include in the test case.");
         }
     }
 }

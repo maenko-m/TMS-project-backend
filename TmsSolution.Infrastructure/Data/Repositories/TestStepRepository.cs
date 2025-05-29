@@ -16,12 +16,14 @@ namespace TmsSolution.Infrastructure.Data.Repositories
         public IQueryable<TestStep> GetAll()
         {
             return _context.TestSteps
+                .Include(ts => ts.Attachments)
                 .AsNoTracking();
         }
 
         public async Task<TestStep> GetByIdAsync(Guid id)
         {
             return await _context.TestSteps
+                .Include(ts => ts.Attachments)
                 .Include(ts => ts.TestCase)
                     .ThenInclude(ts => ts.Project)
                 .FirstOrDefaultAsync(ts => ts.Id == id)

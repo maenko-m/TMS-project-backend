@@ -59,7 +59,7 @@ namespace TmsSolution.Application.Services
                 .FirstOrDefault(p => p.Id == projectId)
                 ?? throw new Exception("Project not found");
 
-            if (user.Role != UserRole.Admin && project.OwnerId != userId && !project.ProjectUsers.Any(pu => pu.Id == userId))
+            if (user.Role != UserRole.Admin && project.OwnerId != userId && !project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"User does not have access to project with ID {projectId}.");
 
             return _testPlanRepository
@@ -77,7 +77,7 @@ namespace TmsSolution.Application.Services
 
             var testPlan = await _testPlanRepository.GetByIdAsync(id);
 
-            if (user.Role != UserRole.Admin && testPlan.Project.OwnerId != userId && !testPlan.Project.ProjectUsers.Any(pu => pu.Id == userId))
+            if (user.Role != UserRole.Admin && testPlan.Project.OwnerId != userId && !testPlan.Project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"Current user does not have access to test plan with ID {id}.");
 
             return _mapper.Map<TestPlanOutputDto>(testPlan);
@@ -115,7 +115,7 @@ namespace TmsSolution.Application.Services
 
             var testPlan = await _testPlanRepository.GetByIdAsync(id);
 
-            if (user.Role != UserRole.Admin && testPlan.Project.OwnerId != userId && !testPlan.Project.ProjectUsers.Any(pu => pu.Id == userId))
+            if (user.Role != UserRole.Admin && testPlan.Project.OwnerId != userId && !testPlan.Project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"Current user does not have access to test plan with ID {id}.");
 
             _mapper.Map(testPlanDto, testPlan);
@@ -152,7 +152,7 @@ namespace TmsSolution.Application.Services
 
             var testPlan = await _testPlanRepository.GetByIdAsync(id);
 
-            if (user.Role != UserRole.Admin && testPlan.Project.OwnerId != userId && !testPlan.Project.ProjectUsers.Any(pu => pu.Id == userId))
+            if (user.Role != UserRole.Admin && testPlan.Project.OwnerId != userId && !testPlan.Project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"Current user does not have access to test plan with ID {id}.");
 
             return await _testPlanRepository.DeleteAsync(testPlan);

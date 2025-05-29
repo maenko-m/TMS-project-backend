@@ -68,7 +68,7 @@ namespace TmsSolution.Application.Services
                 .FirstOrDefault(p => p.Id == projectId)
                 ?? throw new Exception("Project not found");
 
-            if (user.Role != UserRole.Admin && project.OwnerId != userId && !project.ProjectUsers.Any(pu => pu.Id == userId))
+            if (user.Role != UserRole.Admin && project.OwnerId != userId && !project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"User does not have access to project with ID {projectId}.");
 
             return _defectRepository
@@ -100,7 +100,7 @@ namespace TmsSolution.Application.Services
 
             var project = defect.Project;
 
-            if (user.Role != UserRole.Admin && project.OwnerId != userId && !project.ProjectUsers.Any(pu => pu.Id == userId))
+            if (user.Role != UserRole.Admin && project.OwnerId != userId && !project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"User does not have access to defect with ID {id}.");
 
             return _mapper.Map<DefectOutputDto>(defect);
@@ -128,7 +128,7 @@ namespace TmsSolution.Application.Services
 
             var project = defect.Project;
 
-            if (user.Role != UserRole.Admin && project.OwnerId != userId && !project.ProjectUsers.Any(pu => pu.Id == userId))
+            if (user.Role != UserRole.Admin && project.OwnerId != userId && !project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"User does not have access to defect with ID {id}.");
 
             _mapper.Map(defectDto, defect);

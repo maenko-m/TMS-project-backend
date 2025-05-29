@@ -65,7 +65,7 @@ namespace TmsSolution.Application.Services
                 .FirstOrDefault(p => p.Id == projectId)
                 ?? throw new Exception("Project not found");
 
-            if (user.Role != UserRole.Admin && project.OwnerId != userId && !project.ProjectUsers.Any(pu => pu.Id == userId))
+            if (user.Role != UserRole.Admin && project.OwnerId != userId && !project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"User does not have access to project with ID {projectId}.");
 
             return _testStepRepository
@@ -92,7 +92,7 @@ namespace TmsSolution.Application.Services
 
             var testStep = await _testStepRepository.GetByIdAsync(id);
 
-            if (user.Role != UserRole.Admin && testStep.TestCase.Project.OwnerId != userId && !testStep.TestCase.Project.ProjectUsers.Any(pu => pu.Id == userId))
+            if (user.Role != UserRole.Admin && testStep.TestCase.Project.OwnerId != userId && !testStep.TestCase.Project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"User does not have access to test step with ID {id}.");
 
             return _mapper.Map<TestStepOutputDto>(testStep);
@@ -118,7 +118,7 @@ namespace TmsSolution.Application.Services
 
             var testStep = await _testStepRepository.GetByIdAsync(id);
 
-            if (user.Role != UserRole.Admin && testStep.TestCase.Project.OwnerId != userId && !testStep.TestCase.Project.ProjectUsers.Any(pu => pu.Id == userId))
+            if (user.Role != UserRole.Admin && testStep.TestCase.Project.OwnerId != userId && !testStep.TestCase.Project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"User does not have access to test step with ID {id}.");
 
             _mapper.Map(testStepDto, testStep);
@@ -135,7 +135,7 @@ namespace TmsSolution.Application.Services
 
             var testStep = await _testStepRepository.GetByIdAsync(id);
 
-            if (user.Role != UserRole.Admin && testStep.TestCase.Project.OwnerId != userId && !testStep.TestCase.Project.ProjectUsers.Any(pu => pu.Id == userId))
+            if (user.Role != UserRole.Admin && testStep.TestCase.Project.OwnerId != userId && !testStep.TestCase.Project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"User does not have access to test step with ID {id}.");
 
             return await _testStepRepository.DeleteAsync(testStep);

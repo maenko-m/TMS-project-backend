@@ -1,4 +1,5 @@
 ﻿using TmsSolution.Application.Dtos.Tag;
+using TmsSolution.Presentation.GraphQL.Scalar;
 
 namespace TmsSolution.Presentation.GraphQL.Types.Tag
 {
@@ -10,7 +11,7 @@ namespace TmsSolution.Presentation.GraphQL.Types.Tag
 
             descriptor.Field(t => t.Id).Type<NonNullType<IdType>>().Description("Unique identifier of the tag.");
             descriptor.Field(t => t.Name).Type<NonNullType<StringType>>().Description("Name of the tag.");
-            descriptor.Field(t => t.CreatedAt).Type<NonNullType<DateTimeType>>().Description("Date and time the tag was created.");
+            descriptor.Field(t => t.CreatedAt).Type<NonNullType<CustomDateTimeType>>().Description("Date and time the tag was created.");
         }
     }
 }

@@ -58,7 +58,7 @@ namespace TmsSolution.Application.Services
                 .FirstOrDefault(p => p.Id == projectId)
                 ?? throw new Exception("Project not found");
 
-            if (user.Role != UserRole.Admin && project.OwnerId != userId && !project.ProjectUsers.Any(pu => pu.Id == userId))
+            if (user.Role != UserRole.Admin && project.OwnerId != userId && !project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"User does not have access to project with ID {projectId}.");
 
             return _testRunRepository
@@ -76,7 +76,7 @@ namespace TmsSolution.Application.Services
 
             var testRun = await _testRunRepository.GetByIdAsync(id);
 
-            if (user.Role != UserRole.Admin && testRun.Project.OwnerId != userId && !testRun.Project.ProjectUsers.Any(pu => pu.Id == userId))
+            if (user.Role != UserRole.Admin && testRun.Project.OwnerId != userId && !testRun.Project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"User does not have access to test run with ID {id}.");
 
             return _mapper.Map<TestRunOutputDto>(testRun);
@@ -122,7 +122,7 @@ namespace TmsSolution.Application.Services
                     .ToList();
             }
 
-            testRun.StartTime = DateTime.Now;
+            testRun.StartTime = DateTime.UtcNow;
 
             return await _testRunRepository.AddAsync(testRun);
         }
@@ -138,7 +138,7 @@ namespace TmsSolution.Application.Services
 
             var testRun = await _testRunRepository.GetByIdAsync(id);
 
-            if (user.Role != UserRole.Admin && testRun.Project.OwnerId != userId && !testRun.Project.ProjectUsers.Any(pu => pu.Id == userId))
+            if (user.Role != UserRole.Admin && testRun.Project.OwnerId != userId && !testRun.Project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"User does not have access to test run with ID {id}.");
 
             _mapper.Map(testRunDto, testRun);
@@ -210,7 +210,7 @@ namespace TmsSolution.Application.Services
 
             var testRun = await _testRunRepository.GetByIdAsync(id);
 
-            if (user.Role != UserRole.Admin && testRun.Project.OwnerId != userId && !testRun.Project.ProjectUsers.Any(pu => pu.Id == userId))
+            if (user.Role != UserRole.Admin && testRun.Project.OwnerId != userId && !testRun.Project.ProjectUsers.Any(pu => pu.UserId == userId))
                 throw new UnauthorizedAccessException($"User does not have access to test run with ID {id}.");
 
             return await _testRunRepository.DeleteAsync(testRun);

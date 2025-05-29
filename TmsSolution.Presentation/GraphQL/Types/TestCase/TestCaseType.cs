@@ -3,6 +3,7 @@ using TmsSolution.Application.Dtos.Tag;
 using TmsSolution.Application.Dtos.TestCase;
 using TmsSolution.Application.Dtos.TestStep;
 using TmsSolution.Domain.Enums;
+using TmsSolution.Presentation.GraphQL.Scalar;
 
 namespace TmsSolution.Presentation.GraphQL.Types.TestCase
 {
@@ -22,8 +23,8 @@ namespace TmsSolution.Presentation.GraphQL.Types.TestCase
             descriptor.Field(f => f.Status).Type<NonNullType<EnumType<TestCaseStatus>>>().Description("The status of the test case.");
             descriptor.Field(f => f.Priority).Type<NonNullType<EnumType<TestCasePriority>>>().Description("The priority of the test case.");
             descriptor.Field(f => f.Severity).Type<NonNullType<EnumType<TestCaseSeverity>>>().Description("The severity level of the test case.");
-            descriptor.Field(f => f.CreatedAt).Type<NonNullType<DateTimeType>>().Description("The creation date of the test case.");
-            descriptor.Field(f => f.UpdatedAt).Type<NonNullType<DateTimeType>>().Description("The last update date of the test case.");
+            descriptor.Field(f => f.CreatedAt).Type<NonNullType<CustomDateTimeType>>().Description("The creation date of the test case.");
+            descriptor.Field(f => f.UpdatedAt).Type<NonNullType<CustomDateTimeType>>().Description("The last update date of the test case.");
             descriptor.Field(f => f.CreatedById).Type<NonNullType<IdType>>().Description("The ID of the user who created the test case.");
             descriptor.Field(f => f.Parameters).Type<StringType>().Description("Custom parameters in JSON format.");
             descriptor.Field(f => f.CustomFields).Type<StringType>().Description("Additional custom fields in JSON format.");

@@ -1,5 +1,6 @@
 ﻿using TmsSolution.Application.Dtos.Defect;
 using TmsSolution.Domain.Enums;
+using TmsSolution.Presentation.GraphQL.Scalar;
 
 namespace TmsSolution.Presentation.GraphQL.Types.Defect
 {
@@ -16,8 +17,8 @@ namespace TmsSolution.Presentation.GraphQL.Types.Defect
             descriptor.Field(f => f.Title).Type<NonNullType<StringType>>().Description("Title of the defect.");
             descriptor.Field(f => f.ActualResult).Type<NonNullType<StringType>>().Description("The actual result observed that led to the defect.");
             descriptor.Field(f => f.Severity).Type<NonNullType<EnumType<TestCaseSeverity>>>().Description("Severity level of the defect.");
-            descriptor.Field(f => f.CreatedAt).Type<NonNullType<DateTimeType>>().Description("Timestamp when the defect was created.");
-            descriptor.Field(f => f.UpdatedAt).Type<NonNullType<DateTimeType>>().Description("Timestamp when the defect was last updated.");
+            descriptor.Field(f => f.CreatedAt).Type<NonNullType<CustomDateTimeType>>().Description("Timestamp when the defect was created.");
+            descriptor.Field(f => f.UpdatedAt).Type<NonNullType<CustomDateTimeType>>().Description("Timestamp when the defect was last updated.");
             descriptor.Field(f => f.CreatedById).Type<NonNullType<IdType>>().Description("ID of the user who created the defect.");
         }
     }

@@ -9,16 +9,17 @@ using TmsSolution.Application.Dtos.Tag;
 using TmsSolution.Application.Interfaces;
 using TmsSolution.Application.Utilities;
 using TmsSolution.Domain.Entities;
+using TmsSolution.Infrastructure.Data.Interfaces;
 using TmsSolution.Infrastructure.Data.Repositories;
 
 namespace TmsSolution.Application.Services
 {
     public class TagService : ITagService
     {
-        private readonly TagRepository _tagRepository;
+        private readonly ITagRepository _tagRepository;
         private readonly IMapper _mapper;
 
-        public TagService(TagRepository tagRepository, IMapper mapper)
+        public TagService(ITagRepository tagRepository, IMapper mapper)
         {
             _tagRepository = tagRepository;
             _mapper = mapper;

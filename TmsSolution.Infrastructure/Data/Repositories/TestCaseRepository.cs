@@ -20,6 +20,7 @@ namespace TmsSolution.Infrastructure.Data.Repositories
                 .Include(tc => tc.Tags)
                 .Include(tc => tc.Steps)
                 .Include(tc => tc.Defects)
+                .Include(tc => tc.Attachments)
                 .AsNoTracking();
         }
 
@@ -30,6 +31,7 @@ namespace TmsSolution.Infrastructure.Data.Repositories
                 .Include(tc => tc.Tags)
                 .Include(tc => tc.Steps)
                 .Include(tc => tc.Defects)
+                .Include(tc => tc.Attachments)
                 .FirstOrDefaultAsync(tc => tc.Id == id)
                 ?? throw new Exception($"Test case with ID {id} not found.");
         }
