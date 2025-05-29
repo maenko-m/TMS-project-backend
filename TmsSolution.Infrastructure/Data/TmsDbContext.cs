@@ -27,7 +27,6 @@ namespace TmsSolution.Infrastructure.Data
         public DbSet<TestPlanTestCase> TestPlanTestCases { get; set; }
         public DbSet<Milestone> Milestones { get; set; }
         public DbSet<Tag> Tags { get; set; }
-        public DbSet<AuditLog> AuditLogs { get; set; }
 
         public TmsDbContext(DbContextOptions<TmsDbContext> options)
             : base(options)
@@ -78,11 +77,6 @@ namespace TmsSolution.Infrastructure.Data
                 .WithMany(p => p.TestSuites)
                 .HasForeignKey(ts => ts.ProjectId)
                 .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<TestSuite>()
-                .HasOne(ts => ts.ParentSuite)
-                .WithMany(ts => ts.ChildSuites)
-                .HasForeignKey(ts => ts.ParentSuiteId)
-                .OnDelete(DeleteBehavior.Restrict);
 
             // TestStep: иерархия и связь с тест-кейсом
             modelBuilder.Entity<TestStep>()
@@ -90,11 +84,6 @@ namespace TmsSolution.Infrastructure.Data
                 .WithMany(tc => tc.Steps)
                 .HasForeignKey(ts => ts.TestCaseId)
                 .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<TestStep>()
-                .HasOne(ts => ts.ParentStep)
-                .WithMany(ts => ts.ChildSteps)
-                .HasForeignKey(ts => ts.ParentStepId)
-                .OnDelete(DeleteBehavior.Restrict);
 
             // SharedStep: связь с проектом и создателем
             modelBuilder.Entity<SharedStep>()
@@ -131,11 +120,6 @@ namespace TmsSolution.Infrastructure.Data
                 .WithMany(m => m.TestRuns)
                 .HasForeignKey(tr => tr.MilestoneId)
                 .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<TestRun>()
-                .HasOne(tr => tr.AssignedTo)
-                .WithMany(u => u.AssignedTestRuns)
-                .HasForeignKey(tr => tr.AssignedToId)
-                .OnDelete(DeleteBehavior.Restrict);
 
             // TestRunTestCase: связь прогона, тест-кейса и исполнителя
             modelBuilder.Entity<TestRunTestCase>()
@@ -147,11 +131,6 @@ namespace TmsSolution.Infrastructure.Data
                 .HasOne(trtc => trtc.TestCase)
                 .WithMany(tc => tc.TestRunTestCases)
                 .HasForeignKey(trtc => trtc.TestCaseId)
-                .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<TestRunTestCase>()
-                .HasOne(trtc => trtc.AssignedTo)
-                .WithMany(u => u.AssignedTestRunTestCases)
-                .HasForeignKey(trtc => trtc.AssignedToId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Defect: связи с проектом, прогоном, тест-кейсом и создателем
@@ -225,21 +204,9 @@ namespace TmsSolution.Infrastructure.Data
                 .HasIndex(t => t.Name)
                 .IsUnique();
 
-            // AuditLog: связь с проектом и пользователем
-            modelBuilder.Entity<AuditLog>()
-                .HasOne(al => al.Project)
-                .WithMany(p => p.AuditLogs)
-                .HasForeignKey(al => al.ProjectId)
-                .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<AuditLog>()
-                .HasOne(al => al.User)
-                .WithMany(u => u.AuditLogs)
-                .HasForeignKey(al => al.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             base.OnModelCreating(modelBuilder);
         }
     }
     //dotnet ef database update --startup-project ../TmsSolution.Presentation
-    //dotnet ef migrations add "123" --startup-project ../TmsSolution.Presentation
+    //dotnet ef migrations add "Some edits" --startup-project ../TmsSolution.Presentation
 }

@@ -20,8 +20,8 @@ namespace TmsSolution.Application.Mapping
 
             CreateMap<UserCreateDto, User>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => PasswordHasher.Hash(src.Password))) 
-                .ForMember(dest => dest.IconBase64, opt => opt.Ignore()) 
+                .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => PasswordHasher.Hash(src.Password)))
+                .ForMember(dest => dest.IconBase64, opt => opt.Ignore())
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(_ => UserRole.Regular))
                 .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
                 .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
@@ -33,8 +33,7 @@ namespace TmsSolution.Application.Mapping
                 .ForMember(dest => dest.AssignedTestRunTestCases, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedDefects, opt => opt.Ignore())
                 .ForMember(dest => dest.UploadedAttachments, opt => opt.Ignore())
-                .ForMember(dest => dest.CreatedTestPlans, opt => opt.Ignore())
-                .ForMember(dest => dest.AuditLogs, opt => opt.Ignore());
+                .ForMember(dest => dest.CreatedTestPlans, opt => opt.Ignore());
 
             CreateMap<UserUpdateDto, User>()
                 .ForMember(dest => dest.PasswordHash, opt =>

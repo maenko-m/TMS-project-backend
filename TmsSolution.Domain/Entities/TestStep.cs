@@ -14,11 +14,6 @@ namespace TmsSolution.Domain.Entities
         [ForeignKey("TestCaseId")]
         public TestCase TestCase { get; set; }
 
-        public Guid? ParentStepId { get; set; }
-
-        [ForeignKey("ParentStepId")]
-        public TestStep? ParentStep { get; set; }
-
         [Required]
         public string Description { get; set; } = string.Empty;
 
@@ -30,8 +25,6 @@ namespace TmsSolution.Domain.Entities
 
         public DateTime UpdatedAt { get; set; }
 
-        public string? Attachments { get; set; } // JSON 
-
-        public List<TestStep> ChildSteps { get; set; } = new();
+        public List<Attachment> Attachments { get; set; } = new();
     }
 }

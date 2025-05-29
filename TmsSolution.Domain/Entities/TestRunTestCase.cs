@@ -23,11 +23,6 @@ namespace TmsSolution.Domain.Entities
         [Required]
         public TestRunTestCaseStatus Status { get; set; }
 
-        public Guid? AssignedToId { get; set; }
-
-        [ForeignKey("AssignedToId")]
-        public User? AssignedTo { get; set; }
-
         public string? Comment { get; set; }
 
         public int ExecutionTime { get; set; }

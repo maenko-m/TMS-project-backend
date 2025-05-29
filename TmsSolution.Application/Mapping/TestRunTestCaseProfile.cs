@@ -1,0 +1,43 @@
+﻿using AutoMapper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TmsSolution.Application.Dtos.TestRunTestCase;
+using TmsSolution.Domain.Entities;
+
+namespace TmsSolution.Application.Mapping
+{
+    public class TestRunTestCaseProfile : Profile
+    {
+        public TestRunTestCaseProfile()
+        {
+            CreateMap<TestRunTestCase, TestRunTestCaseOutputDto>()
+                .ForMember(dest => dest.TestCase, opt => opt.MapFrom(src => src.TestCase));
+
+            CreateMap<TestRunTestCaseCreateDto, TestRunTestCase>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.TestRun, opt => opt.Ignore())
+                .ForMember(dest => dest.TestCase, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+                .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore());
+
+            CreateMap<TestRunTestCaseUpdateDto, TestRunTestCase>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.TestRun, opt => opt.Ignore())
+                .ForMember(dest => dest.TestCase, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+                .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
+                .ForAllMembers(opt => opt.Condition((src, dest, srcMember, context) =>
+                {
+                    if (srcMember == null) return false;
+
+                    if (srcMember is Guid guid && guid == Guid.Empty)
+                        return false;
+
+                    return true;
+                }));
+        }
+    }
+}

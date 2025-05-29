@@ -41,6 +41,5 @@ namespace TmsSolution.Domain.Entities
         public List<Defect> CreatedDefects { get; set; } = new();
         public List<Attachment> UploadedAttachments { get; set; } = new();
         public List<TestPlan> CreatedTestPlans { get; set; } = new();
-        public List<AuditLog> AuditLogs { get; set; } = new();
     }
 }

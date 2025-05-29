@@ -1,51 +1,22 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TmsSolution.Domain.Entities;
+using TmsSolution.Infrastructure.Data.Interfaces;
 
 namespace TmsSolution.Infrastructure.Data.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : RepositoryBase<User>, IUserRepository
     {
-        private readonly TmsDbContext _context;
-
-        public UserRepository(TmsDbContext context)
-        {
-            _context = context;
-        }
+        public UserRepository(TmsDbContext context) : base(context) { }
 
         public IQueryable<User> GetAll()
         {
             return _context.Users.AsNoTracking();
         }
+
         public async Task<User> GetByIdAsync(Guid id)
         {
             return await _context.Users.FindAsync(id)
                 ?? throw new Exception($"User with ID {id} not found.");
-        }
-        public async Task<bool> AddAsync(User user)
-        {
-            await _context.Users.AddAsync(user);
-            return await _context.SaveChangesAsync() > 0;
-        }
-        public async Task<bool> UpdateAsync(User user)
-        {
-            var existingUser = await _context.Users
-                .FirstOrDefaultAsync(p => p.Id == user.Id)
-                ?? throw new Exception($"User with ID {user.Id} not found.");
-
-
-            _context.Entry(existingUser).CurrentValues.SetValues(user);
-            return await _context.SaveChangesAsync() > 0;
-        }
-        public async Task<bool> DeleteAsync(Guid id)
-        {
-            var user = await _context.Users
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (user == null)
-                return false;
-
-            _context.Users.Remove(user);
-            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> ExistsAsync(Guid id)

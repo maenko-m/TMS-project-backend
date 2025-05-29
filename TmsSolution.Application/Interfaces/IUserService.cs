@@ -5,15 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using TmsSolution.Application.Dtos.Project;
 using TmsSolution.Application.Dtos.User;
+using TmsSolution.Domain.Entities;
 
 namespace TmsSolution.Application.Interfaces
 {
     public interface IUserService
     {
-        IQueryable<UserOutputDto> GetAll();
-        Task<UserOutputDto> GetByIdAsync(Guid id);
+        IQueryable<UserOutputDto> GetAll(Guid userId);
+        Task<UserOutputDto> GetByIdAsync(Guid id, Guid userId);
         Task<bool> AddAsync(UserCreateDto userDto);
-        Task<bool> UpdateAsync(Guid id, UserUpdateDto userDto);
-        Task<bool> DeleteAsync(Guid id);
+        Task<bool> UpdateAsync(Guid id, UserUpdateDto userDto, Guid userId);
+        Task<bool> DeleteAsync(Guid id, Guid userId);
     }
 }

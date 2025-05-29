@@ -5,17 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TmsSolution.Domain.Entities;
+using TmsSolution.Infrastructure.Data.Interfaces;
 
 namespace TmsSolution.Infrastructure.Data.Repositories
 {
-    public class ProjectRepository : IProjectRepository
+    public class ProjectRepository : RepositoryBase<Project>, IProjectRepository
     {
-        private readonly TmsDbContext _context;
+        public ProjectRepository(TmsDbContext context) : base(context) { }
 
-        public ProjectRepository(TmsDbContext context)
-        {
-            _context = context;
-        }
         public IQueryable<Project> GetAll()
         {
             return _context.Projects
@@ -29,42 +26,12 @@ namespace TmsSolution.Infrastructure.Data.Repositories
         public async Task<Project> GetByIdAsync(Guid id)
         {
             return await _context.Projects
-                .AsNoTracking()
                 .Include(p => p.Owner)
                 .Include(p => p.ProjectUsers)
                 .Include(p => p.TestCases)
                 .Include(p => p.Defects)
                 .FirstOrDefaultAsync(p => p.Id == id)
                 ?? throw new Exception($"Project with ID {id} not found.");
-        }
-
-        public async Task<bool> AddAsync(Project project)
-        {
-            await _context.Projects.AddAsync(project);
-            return await _context.SaveChangesAsync() > 0;
-        }
-
-        public async Task<bool> UpdateAsync(Project project)
-        {
-            var existingProject = await _context.Projects
-                .FirstOrDefaultAsync(p => p.Id == project.Id) 
-                ?? throw new Exception($"Project with ID {project.Id} not found.");
-
-
-            _context.Entry(existingProject).CurrentValues.SetValues(project);
-            return await _context.SaveChangesAsync() > 0;
-        }
-
-        public async Task<bool> DeleteAsync(Guid id)
-        {
-            var project = await _context.Projects
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (project == null)
-                return false;
-
-            _context.Projects.Remove(project);
-            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

@@ -13,11 +13,6 @@ namespace TmsSolution.Domain.Entities
         [ForeignKey("ProjectId")]
         public Project Project { get; set; }
 
-        public Guid? ParentSuiteId { get; set; }
-
-        [ForeignKey("ParentSuiteId")]
-        public TestSuite? ParentSuite { get; set; }
-
         [Required, MaxLength(255)]
         public string Name { get; set; } = string.Empty;
 
@@ -30,6 +25,5 @@ namespace TmsSolution.Domain.Entities
         public DateTime UpdatedAt { get; set; }
 
         public List<TestCase> TestCases { get; set; } = new();
-        public List<TestSuite> ChildSuites { get; set; } = new();
     }
 }

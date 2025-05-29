@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using TmsSolution.Application.Dtos.Auth;
 using TmsSolution.Application.Interfaces;
 using TmsSolution.Application.Utilities;
-using TmsSolution.Infrastructure.Data.Repositories;
+using TmsSolution.Infrastructure.Data.Interfaces;
 using TmsSolution.Infrastructure.Security;
 
 namespace TmsSolution.Application.Services

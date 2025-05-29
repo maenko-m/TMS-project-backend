@@ -9,7 +9,8 @@ using TmsSolution.Application.Dtos.User;
 using TmsSolution.Application.Interfaces;
 using TmsSolution.Application.Utilities;
 using TmsSolution.Domain.Entities;
-using TmsSolution.Infrastructure.Data.Repositories;
+using TmsSolution.Domain.Enums;
+using TmsSolution.Infrastructure.Data.Interfaces;
 
 namespace TmsSolution.Application.Services
 {
@@ -24,8 +25,16 @@ namespace TmsSolution.Application.Services
             _mapper = mapper;
         }
 
-        public IQueryable<UserOutputDto> GetAll()
+        public IQueryable<UserOutputDto> GetAll(Guid userId)
         {
+            var currentUser = _userRepository
+                .GetAll()
+                .FirstOrDefault(u => u.Id == userId)
+                ?? throw new Exception("User not found");
+
+            if (currentUser.Role != UserRole.Admin)
+                throw new UnauthorizedAccessException($"Current user does not have access to all users.");
+
             return _userRepository.GetAll()
                 .Select(u => new UserOutputDto
                 {
@@ -39,8 +48,16 @@ namespace TmsSolution.Application.Services
                 });
         }
 
-        public async Task<UserOutputDto> GetByIdAsync(Guid id)
+        public async Task<UserOutputDto> GetByIdAsync(Guid id, Guid userId)
         {
+            var currentUser = _userRepository
+                .GetAll()
+                .FirstOrDefault(u => u.Id == userId)
+                ?? throw new Exception("User not found");
+
+            if (currentUser.Role != UserRole.Admin && id != userId)
+                throw new UnauthorizedAccessException($"Current user does not have access to user with ID {id}.");
+
             var users = await _userRepository.GetByIdAsync(id);
             return _mapper.Map<UserOutputDto>(users);
         }
@@ -56,9 +73,17 @@ namespace TmsSolution.Application.Services
 
             return await _userRepository.AddAsync(user);
         }
-        public async Task<bool> UpdateAsync(Guid id, UserUpdateDto userDto)
+        public async Task<bool> UpdateAsync(Guid id, UserUpdateDto userDto, Guid userId)
         {
             Validator.Validate(userDto);
+
+            var currentUser = _userRepository
+                .GetAll()
+                .FirstOrDefault(u => u.Id == userId)
+                ?? throw new Exception("User not found");
+
+            if (currentUser.Role != UserRole.Admin && id != userId)
+                throw new UnauthorizedAccessException($"Current user does not have access to user with ID {id}.");
 
             var user = await _userRepository.GetByIdAsync(id);
             _mapper.Map(userDto, user);
@@ -66,12 +91,21 @@ namespace TmsSolution.Application.Services
             if (!string.IsNullOrWhiteSpace(userDto.IconPath))
                 user.IconBase64 = await ImageProcessor.ConvertIconToBase64(userDto.IconPath);
 
-            return await _userRepository.UpdateAsync(user);
+            return await _userRepository.SaveChangesAsync();
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(Guid id, Guid userId)
         {
-            return await _userRepository.DeleteAsync(id);
+            var currentUser = _userRepository
+                .GetAll()
+                .FirstOrDefault(u => u.Id == userId)
+                ?? throw new Exception("User not found");
+
+            if (currentUser.Role != UserRole.Admin && id != userId)
+                throw new UnauthorizedAccessException($"Current user does not have access to user with ID {id}.");
+
+            var user = await _userRepository.GetByIdAsync(id);
+            return await _userRepository.DeleteAsync(user);
         }
     }
 }

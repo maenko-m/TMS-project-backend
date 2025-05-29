@@ -44,7 +44,5 @@ namespace TmsSolution.Domain.Entities
         public string? Attachments { get; set; } // JSON 
 
         public string? CustomFields { get; set; } // JSON
-
-        public string? ExternalIssueId { get; set; }
     }
 }

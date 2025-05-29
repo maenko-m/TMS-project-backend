@@ -51,6 +51,9 @@ namespace TmsSolution.Infrastructure.Migrations
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("TestStepId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("UploadedById")
                         .HasColumnType("uniqueidentifier");
 
@@ -58,48 +61,11 @@ namespace TmsSolution.Infrastructure.Migrations
 
                     b.HasIndex("ProjectId");
 
+                    b.HasIndex("TestStepId");
+
                     b.HasIndex("UploadedById");
 
                     b.ToTable("Attachments");
-                });
-
-            modelBuilder.Entity("TmsSolution.Domain.Entities.AuditLog", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Action")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Details")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("EntityId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("EntityType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("ProjectId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProjectId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AuditLogs");
                 });
 
             modelBuilder.Entity("TmsSolution.Domain.Entities.Defect", b =>
@@ -122,9 +88,6 @@ namespace TmsSolution.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CustomFields")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ExternalIssueId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("ProjectId")
@@ -486,14 +449,8 @@ namespace TmsSolution.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("AssignedToId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("CustomFields")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -504,9 +461,6 @@ namespace TmsSolution.Infrastructure.Migrations
                     b.Property<string>("Environment")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("ExternalIssueId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("MilestoneId")
                         .HasColumnType("uniqueidentifier");
@@ -528,13 +482,16 @@ namespace TmsSolution.Infrastructure.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasIndex("AssignedToId");
+                    b.HasKey("Id");
 
                     b.HasIndex("MilestoneId");
 
                     b.HasIndex("ProjectId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("TestRuns");
                 });
@@ -543,9 +500,6 @@ namespace TmsSolution.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("AssignedToId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Comment")
@@ -569,13 +523,16 @@ namespace TmsSolution.Infrastructure.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasIndex("AssignedToId");
+                    b.HasKey("Id");
 
                     b.HasIndex("TestCaseId");
 
                     b.HasIndex("TestRunId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("TestRunTestCases");
                 });
@@ -585,9 +542,6 @@ namespace TmsSolution.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Attachments")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -599,9 +553,6 @@ namespace TmsSolution.Infrastructure.Migrations
                     b.Property<string>("ExpectedResult")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("ParentStepId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("Position")
                         .HasColumnType("int");
 
@@ -612,8 +563,6 @@ namespace TmsSolution.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ParentStepId");
 
                     b.HasIndex("TestCaseId");
 
@@ -637,9 +586,6 @@ namespace TmsSolution.Infrastructure.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<Guid?>("ParentSuiteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Preconditions")
                         .HasColumnType("nvarchar(max)");
 
@@ -650,8 +596,6 @@ namespace TmsSolution.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ParentSuiteId");
 
                     b.HasIndex("ProjectId");
 
@@ -713,6 +657,10 @@ namespace TmsSolution.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TmsSolution.Domain.Entities.TestStep", null)
+                        .WithMany("Attachments")
+                        .HasForeignKey("TestStepId");
+
                     b.HasOne("TmsSolution.Domain.Entities.User", "UploadedBy")
                         .WithMany("UploadedAttachments")
                         .HasForeignKey("UploadedById")
@@ -722,24 +670,6 @@ namespace TmsSolution.Infrastructure.Migrations
                     b.Navigation("Project");
 
                     b.Navigation("UploadedBy");
-                });
-
-            modelBuilder.Entity("TmsSolution.Domain.Entities.AuditLog", b =>
-                {
-                    b.HasOne("TmsSolution.Domain.Entities.Project", "Project")
-                        .WithMany("AuditLogs")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("TmsSolution.Domain.Entities.User", "User")
-                        .WithMany("AuditLogs")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Project");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TmsSolution.Domain.Entities.Defect", b =>
@@ -935,11 +865,6 @@ namespace TmsSolution.Infrastructure.Migrations
 
             modelBuilder.Entity("TmsSolution.Domain.Entities.TestRun", b =>
                 {
-                    b.HasOne("TmsSolution.Domain.Entities.User", "AssignedTo")
-                        .WithMany("AssignedTestRuns")
-                        .HasForeignKey("AssignedToId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("TmsSolution.Domain.Entities.Milestone", "Milestone")
                         .WithMany("TestRuns")
                         .HasForeignKey("MilestoneId")
@@ -951,7 +876,9 @@ namespace TmsSolution.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AssignedTo");
+                    b.HasOne("TmsSolution.Domain.Entities.User", null)
+                        .WithMany("AssignedTestRuns")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Milestone");
 
@@ -960,11 +887,6 @@ namespace TmsSolution.Infrastructure.Migrations
 
             modelBuilder.Entity("TmsSolution.Domain.Entities.TestRunTestCase", b =>
                 {
-                    b.HasOne("TmsSolution.Domain.Entities.User", "AssignedTo")
-                        .WithMany("AssignedTestRunTestCases")
-                        .HasForeignKey("AssignedToId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("TmsSolution.Domain.Entities.TestCase", "TestCase")
                         .WithMany("TestRunTestCases")
                         .HasForeignKey("TestCaseId")
@@ -977,7 +899,9 @@ namespace TmsSolution.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AssignedTo");
+                    b.HasOne("TmsSolution.Domain.Entities.User", null)
+                        .WithMany("AssignedTestRunTestCases")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("TestCase");
 
@@ -986,36 +910,22 @@ namespace TmsSolution.Infrastructure.Migrations
 
             modelBuilder.Entity("TmsSolution.Domain.Entities.TestStep", b =>
                 {
-                    b.HasOne("TmsSolution.Domain.Entities.TestStep", "ParentStep")
-                        .WithMany("ChildSteps")
-                        .HasForeignKey("ParentStepId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("TmsSolution.Domain.Entities.TestCase", "TestCase")
                         .WithMany("Steps")
                         .HasForeignKey("TestCaseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ParentStep");
-
                     b.Navigation("TestCase");
                 });
 
             modelBuilder.Entity("TmsSolution.Domain.Entities.TestSuite", b =>
                 {
-                    b.HasOne("TmsSolution.Domain.Entities.TestSuite", "ParentSuite")
-                        .WithMany("ChildSuites")
-                        .HasForeignKey("ParentSuiteId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("TmsSolution.Domain.Entities.Project", "Project")
                         .WithMany("TestSuites")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("ParentSuite");
 
                     b.Navigation("Project");
                 });
@@ -1028,8 +938,6 @@ namespace TmsSolution.Infrastructure.Migrations
             modelBuilder.Entity("TmsSolution.Domain.Entities.Project", b =>
                 {
                     b.Navigation("Attachments");
-
-                    b.Navigation("AuditLogs");
 
                     b.Navigation("Defects");
 
@@ -1086,13 +994,11 @@ namespace TmsSolution.Infrastructure.Migrations
 
             modelBuilder.Entity("TmsSolution.Domain.Entities.TestStep", b =>
                 {
-                    b.Navigation("ChildSteps");
+                    b.Navigation("Attachments");
                 });
 
             modelBuilder.Entity("TmsSolution.Domain.Entities.TestSuite", b =>
                 {
-                    b.Navigation("ChildSuites");
-
                     b.Navigation("TestCases");
                 });
 
@@ -1101,8 +1007,6 @@ namespace TmsSolution.Infrastructure.Migrations
                     b.Navigation("AssignedTestRunTestCases");
 
                     b.Navigation("AssignedTestRuns");
-
-                    b.Navigation("AuditLogs");
 
                     b.Navigation("CreatedDefects");
 

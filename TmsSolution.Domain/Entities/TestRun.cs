@@ -38,14 +38,6 @@ namespace TmsSolution.Domain.Entities
 
         public DateTime UpdatedAt { get; set; }
 
-        public Guid? AssignedToId { get; set; }
-
-        [ForeignKey("AssignedToId")]
-        public User? AssignedTo { get; set; }
-
-        public string? CustomFields { get; set; } // JSON
-        public string? ExternalIssueId { get; set; }
-
         public List<Tag> Tags { get; set; } = new();
         public List<TestRunTestCase> TestRunTestCases { get; set; } = new();
         public List<Defect> Defects { get; set; } = new();

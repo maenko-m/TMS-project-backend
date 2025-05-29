@@ -1,6 +1,10 @@
-﻿using TmsSolution.Application.Dtos.Project;
+﻿using HotChocolate.Authorization;
+using System.Security.Claims;
+using TmsSolution.Application.Dtos.Project;
 using TmsSolution.Application.Interfaces;
 using TmsSolution.Domain.Entities;
+using TmsSolution.Presentation.Common.Extensions;
+using TmsSolution.Presentation.GraphQL.Filters;
 
 namespace TmsSolution.Presentation.GraphQL.Queries
 {
@@ -9,14 +13,41 @@ namespace TmsSolution.Presentation.GraphQL.Queries
     {
         [UsePaging]
         [UseProjection]
-        [UseFiltering]
         [UseSorting]
+        [Authorize]
         public IQueryable<ProjectOutputDto> GetProjects(
-            [Service] IProjectService projectService)
+            ClaimsPrincipal user,
+            [Service] IProjectService projectService,
+            ProjectFilterInput? filter)
         {
             try
             {
-                return projectService.GetAll();
+                var userId = user.GetUserId();
+
+                var projects =  projectService.GetAll(userId);
+
+                if (filter != null)
+                {
+                    if (!string.IsNullOrEmpty(filter.Name))
+                    {
+                        projects = projects.Where(p => p.Name.Contains(filter.Name));
+                    }
+
+                    if (filter.Involvement != null)
+                    {
+                        switch (filter.Involvement)
+                        {
+                            case ProjectInvolvement.Owner:
+                                projects = projects.Where(p => p.OwnerId == userId);
+                                break;
+                            case ProjectInvolvement.Participant:
+                                projects = projects.Where(p => p.OwnerId != userId);
+                                break;
+                        }
+                    }
+                }
+
+                return projects;
             }
             catch (Exception ex)
             {
@@ -24,13 +55,17 @@ namespace TmsSolution.Presentation.GraphQL.Queries
             }
         }
 
+        [Authorize]
         public async Task<ProjectOutputDto> GetProjectById(
             Guid id,
+            ClaimsPrincipal user,
             [Service] IProjectService projectService)
         {
             try
             {
-                return await projectService.GetByIdAsync(id);
+                var userId = user.GetUserId();
+
+                return await projectService.GetByIdAsync(id, userId);
             }
             catch (Exception ex)
             {

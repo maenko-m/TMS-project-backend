@@ -3,6 +3,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using TmsSolution.Application.Dtos.User;
 using TmsSolution.Application.Interfaces;
+using TmsSolution.Domain.Entities;
+using TmsSolution.Presentation.Common.Extensions;
 
 namespace TmsSolution.Presentation.GraphQL.Queries
 {
@@ -13,12 +15,16 @@ namespace TmsSolution.Presentation.GraphQL.Queries
         [UseProjection]
         [UseFiltering]
         [UseSorting]
+        [Authorize]
         public IQueryable<UserOutputDto> GetUsers(
+            ClaimsPrincipal user,
             [Service] IUserService userService)
         {
             try
             {
-                return userService.GetAll();
+                var userId = user.GetUserId();
+
+                return userService.GetAll(userId);
             }
             catch (Exception ex)
             {
@@ -26,19 +32,24 @@ namespace TmsSolution.Presentation.GraphQL.Queries
             }
         }
 
+        [Authorize]
         public async Task<UserOutputDto> GetUserById(
             Guid id,
+            ClaimsPrincipal user,
             [Service] IUserService userService)
         {
             try
             {
-                return await userService.GetByIdAsync(id);
+                var userId = user.GetUserId();
+
+                return await userService.GetByIdAsync(id, userId);
             }
             catch (Exception ex)
             {
                 throw new GraphQLException(new Error(ex.Message));
             }
         }
+
 
         [Authorize]
         public async Task<UserOutputDto> Me(
@@ -55,7 +66,7 @@ namespace TmsSolution.Presentation.GraphQL.Queries
                     throw new GraphQLException("User ID not found in token.");
                 }
 
-                return await userService.GetByIdAsync(userId);
+                return await userService.GetByIdAsync(userId, userId);
             }
             catch (Exception ex)
             {

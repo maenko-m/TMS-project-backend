@@ -1,11 +1,15 @@
-﻿using TmsSolution.Application.Dtos.User;
+﻿using HotChocolate.Authorization;
+using System.Security.Claims;
+using TmsSolution.Application.Dtos.User;
 using TmsSolution.Application.Interfaces;
+using TmsSolution.Presentation.Common.Extensions;
 
 namespace TmsSolution.Presentation.GraphQL.Mutations
 {
     [ExtendObjectType("Mutation")]
     public class UserMutation
     {
+        [Authorize]
         public async Task<bool> CreateUser(
             UserCreateDto input,
             [Service] IUserService userService)
@@ -20,14 +24,18 @@ namespace TmsSolution.Presentation.GraphQL.Mutations
             }
         }
 
+        [Authorize]
         public async Task<bool> UpdateUser(
             Guid id,
+            ClaimsPrincipal user,
             UserUpdateDto input,
             [Service] IUserService userService)
         {
             try
             {
-                return await userService.UpdateAsync(id, input);
+                var userId = user.GetUserId();
+
+                return await userService.UpdateAsync(id, input, userId);
             }
             catch (Exception ex)
             {
@@ -37,11 +45,14 @@ namespace TmsSolution.Presentation.GraphQL.Mutations
 
         public async Task<bool> DeleteUser(
             Guid id,
+            ClaimsPrincipal user,
             [Service] IUserService userService)
         {
             try
             {
-                return await userService.DeleteAsync(id);
+                var userId = user.GetUserId();
+
+                return await userService.DeleteAsync(id, userId);
             }
             catch (Exception ex)
             {

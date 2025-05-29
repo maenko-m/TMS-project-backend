@@ -31,7 +31,6 @@ namespace TmsSolution.Application.Mapping
                 .ForMember(dest => dest.TestPlans, opt => opt.Ignore())
                 .ForMember(dest => dest.Milestones, opt => opt.Ignore())
                 .ForMember(dest => dest.Tags, opt => opt.Ignore())
-                .ForMember(dest => dest.AuditLogs, opt => opt.Ignore())
                 .ForMember(dest => dest.Owner, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
                 .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
@@ -40,7 +39,16 @@ namespace TmsSolution.Application.Mapping
             CreateMap<ProjectUpdateDto, Project>()
                 .ForMember(dest => dest.ProjectUsers, opt => opt.MapFrom((src, dest) => src.ProjectUserIds != null ? src.ProjectUserIds.Select(id => new ProjectUser { UserId = id }).ToList() : dest.ProjectUsers))
                 .ForMember(dest => dest.IconBase64, opt => opt.Ignore())
-                .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+                .ForAllMembers(opt => opt.Condition((src, dest, srcMember, context) =>
+                {
+                    if (srcMember == null)
+                        return false;
+
+                    if (srcMember is Guid guidValue && guidValue == Guid.Empty)
+                        return false;
+
+                    return true;
+                }));
         }
     }
 }

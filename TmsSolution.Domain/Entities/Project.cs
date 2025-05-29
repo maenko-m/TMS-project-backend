@@ -42,18 +42,20 @@ namespace TmsSolution.Domain.Entities
         public List<TestPlan> TestPlans { get; set; } = new();
         public List<Milestone> Milestones { get; set; } = new();
         public List<Tag> Tags { get; set; } = new();
-        public List<AuditLog> AuditLogs { get; set; } = new();
+
 
         /// <summary>
         /// Проверяет, имеет ли пользователь доступ к проекту
         /// </summary>
-        public bool HasAccess(User user)
+        public bool HasAccess(Guid userId)
         {
+            if (OwnerId == userId)
+                return true;
+
             if (AccessType == ProjectAccessType.Public)
                 return true;
 
-            return user != null && ProjectUsers.Any(u => u.Id == user.Id);
+            return ProjectUsers.Any(u => u.Id == userId);
         }
-        
     }
 }
