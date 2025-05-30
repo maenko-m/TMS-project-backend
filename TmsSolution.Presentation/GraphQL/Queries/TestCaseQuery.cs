@@ -13,6 +13,15 @@ namespace TmsSolution.Presentation.GraphQL.Queries
     [ExtendObjectType("Query")]
     public class TestCaseQuery
     {
+        /// <summary>
+        /// Retrieves a paginated, sortable list of all test cases with optional filtering.
+        /// </summary>
+        /// <param name="user">The authenticated user, used for access validation.</param>
+        /// <param name="testCaseService">The service used to retrieve test case data.</param>
+        /// <param name="filter">Optional filtering criteria to narrow down results.</param>
+        /// <returns>A queryable collection of <see cref="TestCaseOutputDto"/> representing the test cases.</returns>
+        /// <remarks>Authorization is required. Only users with the "Admin" role can access this query.</remarks>
+        /// <exception cref="GraphQLException">Thrown when an error occurs while retrieving test cases.</exception>
         [UsePaging]
         [UseProjection]
         [UseSorting]
@@ -63,6 +72,16 @@ namespace TmsSolution.Presentation.GraphQL.Queries
             }
         }
 
+        /// <summary>
+        /// Retrieves a paginated, sortable list of test cases for a specific project with optional filtering.
+        /// </summary>
+        /// <param name="projectId">The ID of the project to retrieve test cases from.</param>
+        /// <param name="user">The authenticated user, used for access validation.</param>
+        /// <param name="testCaseService">The service used to retrieve test case data.</param>
+        /// <param name="filter">Optional filtering criteria to narrow down results.</param>
+        /// <returns>A queryable collection of <see cref="TestCaseOutputDto"/> for the specified project.</returns>
+        /// <remarks>Authorization is required. Accessible to all authenticated users with permission to the specified project.</remarks>
+        /// <exception cref="GraphQLException">Thrown when an error occurs while retrieving test cases.</exception>
         [UsePaging]
         [UseProjection]
         [UseSorting]
@@ -114,6 +133,15 @@ namespace TmsSolution.Presentation.GraphQL.Queries
             }
         }
 
+        /// <summary>
+        /// Retrieves a specific test case by its unique identifier.
+        /// </summary>
+        /// <param name="id">The ID of the test case to retrieve.</param>
+        /// <param name="user">The authenticated user, used for access validation.</param>
+        /// <param name="testCaseService">The service used to retrieve test case data.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the <see cref="TestCaseOutputDto"/>.</returns>
+        /// <remarks>Authorization is required. Accessible to all authenticated users with permission to the resource.</remarks>
+        /// <exception cref="GraphQLException">Thrown when the test case cannot be found or access is denied.</exception>
         [Authorize]
         public async Task<TestCaseOutputDto> GetTestCaseById(
             Guid id,

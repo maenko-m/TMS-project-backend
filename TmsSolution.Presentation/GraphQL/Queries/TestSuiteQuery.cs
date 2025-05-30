@@ -11,6 +11,15 @@ namespace TmsSolution.Presentation.GraphQL.Queries
     [ExtendObjectType("Query")]
     public class TestSuiteQuery
     {
+        /// <summary>
+        /// Retrieves a paginated, sortable list of all test suites with optional filtering.
+        /// </summary>
+        /// <param name="user">The authenticated user, used for access validation.</param>
+        /// <param name="testSuiteService">The service used to retrieve test suite data.</param>
+        /// <param name="filter">Optional filtering criteria to narrow down results.</param>
+        /// <returns>A queryable collection of <see cref="TestSuiteOutputDto"/> representing the test suites.</returns>
+        /// <remarks>Authorization is required. Only users with the "Admin" role can access this query.</remarks>
+        /// <exception cref="GraphQLException">Thrown when an error occurs while retrieving test suites.</exception>
         [UsePaging]
         [UseProjection]
         [UseSorting]
@@ -42,6 +51,16 @@ namespace TmsSolution.Presentation.GraphQL.Queries
             }
         }
 
+        /// <summary>
+        /// Retrieves a paginated, sortable list of test suites filtered by project ID with optional filtering.
+        /// </summary>
+        /// <param name="projectId">The ID of the project to filter test suites.</param>
+        /// <param name="user">The authenticated user, used for access validation.</param>
+        /// <param name="testSuiteService">The service used to retrieve test suite data.</param>
+        /// <param name="filter">Optional filtering criteria to narrow down results.</param>
+        /// <returns>A queryable collection of <see cref="TestSuiteOutputDto"/> representing the test suites.</returns>
+        /// <remarks>Authorization is required.</remarks>
+        /// <exception cref="GraphQLException">Thrown when an error occurs while retrieving test suites.</exception>
         [UsePaging]
         [UseProjection]
         [UseSorting]
@@ -74,7 +93,15 @@ namespace TmsSolution.Presentation.GraphQL.Queries
             }
         }
 
-
+        /// <summary>
+        /// Retrieves a test suite by its unique identifier.
+        /// </summary>
+        /// <param name="id">The unique identifier of the test suite.</param>
+        /// <param name="user">The authenticated user, used for access validation.</param>
+        /// <param name="testSuiteService">The service used to retrieve test suite data.</param>
+        /// <returns>A <see cref="TestSuiteOutputDto"/> representing the requested test suite.</returns>
+        /// <remarks>Authorization is required.</remarks>
+        /// <exception cref="GraphQLException">Thrown when an error occurs while retrieving the test suite.</exception>
         [Authorize]
         public async Task<TestSuiteOutputDto> GetTestSuiteById(
             Guid id,

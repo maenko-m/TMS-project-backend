@@ -4,31 +4,33 @@ using TmsSolution.Application.Interfaces;
 
 namespace TmsSolution.Presentation.Controllers
 {
-    /// <summary>
-    /// Контроллер для обработки операций аутентификации.
-    /// </summary>
     [ApiController]
     [Route("api/")]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
 
-        /// <summary>
-        /// Инициализирует новый экземпляр <see cref="AuthController"/>.
-        /// </summary>
-        /// <param name="authService">Сервис аутентификации.</param>
         public AuthController(IAuthService authService)
         {
             _authService = authService;
         }
 
         /// <summary>
-        /// Аутентифицирует пользователя и возвращает JWT-токен.
+        /// Authenticates a user with the provided email and password.
         /// </summary>
-        /// <param name="loginRequest">Данные для входа (email и пароль).</param>
-        /// <returns>Возвращает <see cref="LoginResponseDto"/> с токеном и временем истечения, либо ошибку 401 при неверных учетных данных.</returns>
-        /// <response code="200">Успешная аутентификация, возвращает токен.</response>
-        /// <response code="401">Неверный email или пароль.</response>
+        /// <param name="loginRequest">
+        /// An instance of <see cref="LoginRequestDto"/> containing the user's email and password.
+        /// </param>
+        /// <returns>
+        /// Returns an <see cref="IActionResult"/>:
+        /// <list type="bullet">
+        /// <item><description><see cref="OkObjectResult"/> with authentication result (e.g. token) if credentials are valid.</description></item>
+        /// <item><description><see cref="UnauthorizedResult"/> with an error message if the email or password is incorrect.</description></item>
+        /// </list>
+        /// </returns>
+        /// <remarks>
+        /// This endpoint does not require prior authentication. It is used to obtain an access token or session.
+        /// </remarks>
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequest)
         {

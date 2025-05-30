@@ -10,7 +10,7 @@ using Path = System.IO.Path;
 namespace TmsSolution.Presentation.Controllers
 {
     [ApiController]
-    [Route("api")]
+    [Route("api/")]
     public class UploadController : ControllerBase
     {
         private readonly IAttachmentService _attachmentService;
@@ -20,8 +20,25 @@ namespace TmsSolution.Presentation.Controllers
             _attachmentService = attachmentService;
         }
 
-        [HttpPost("/upload")]
+
+        /// <summary>
+        /// Uploads an attachment file for a specified project.
+        /// </summary>
+        /// <param name="dto">
+        /// An instance of <see cref="AttachmentCreateDto"/> containing the file and the target project ID.
+        /// </param>
+        /// <returns>
+        /// Returns an <see cref="IActionResult"/>:
+        /// <list type="bullet">
+        /// <item><description><see cref="OkObjectResult"/> with the uploaded attachment ID if successful.</description></item>
+        /// <item><description><see cref="BadRequestObjectResult"/> if the file is missing or invalid.</description></item>
+        /// </list>
+        /// </returns>
+        /// <remarks>
+        /// Authorization is required. The uploaded file is saved in a folder associated with the given ProjectId.
+        /// </remarks>
         [Authorize]
+        [HttpPost("upload")]
         public async Task<IActionResult> Upload([FromForm] AttachmentCreateDto dto)
         {
             var userId = User.GetUserId();

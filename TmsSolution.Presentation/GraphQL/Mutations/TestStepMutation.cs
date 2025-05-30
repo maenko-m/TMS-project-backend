@@ -10,6 +10,14 @@ namespace TmsSolution.Presentation.GraphQL.Mutations
     [ExtendObjectType("Mutation")]
     public class TestStepMutation
     {
+        /// <summary>
+        /// Creates a new test step using the provided input data.
+        /// </summary>
+        /// <param name="input">The data required to create the test step.</param>
+        /// <param name="testStepService">The service responsible for managing test steps.</param>
+        /// <returns>True if the test step was created successfully; otherwise, false.</returns>
+        /// <remarks>Authorization is required.</remarks>
+        /// <exception cref="GraphQLException">Thrown when an error occurs during creation.</exception>
         [Authorize]
         public async Task<bool> CreateTestStep(
             TestStepCreateDto input,
@@ -25,6 +33,16 @@ namespace TmsSolution.Presentation.GraphQL.Mutations
             }
         }
 
+        /// <summary>
+        /// Updates an existing test step identified by its ID using the provided data.
+        /// </summary>
+        /// <param name="id">The unique identifier of the test step to update.</param>
+        /// <param name="user">The authenticated user, used for access validation.</param>
+        /// <param name="input">The updated data for the test step.</param>
+        /// <param name="testStepService">The service responsible for managing test steps.</param>
+        /// <returns>True if the test step was updated successfully; otherwise, false.</returns>
+        /// <remarks>Authorization is required.</remarks>
+        /// <exception cref="GraphQLException">Thrown when an error occurs during update.</exception>
         [Authorize]
         public async Task<bool> UpdateTestStep(
             Guid id,
@@ -44,6 +62,16 @@ namespace TmsSolution.Presentation.GraphQL.Mutations
             }
         }
 
+
+        /// <summary>
+        /// Deletes a test step identified by its unique ID.
+        /// </summary>
+        /// <param name="id">The unique identifier of the test step to delete.</param>
+        /// <param name="user">The authenticated user, used for access validation.</param>
+        /// <param name="testStepService">The service responsible for managing test steps.</param>
+        /// <returns>True if the test step was deleted successfully; otherwise, false.</returns>
+        /// <remarks>Authorization is required.</remarks>
+        /// <exception cref="GraphQLException">Thrown when an error occurs during deletion.</exception>
         [Authorize]
         public async Task<bool> DeleteTestStep(
             Guid id,

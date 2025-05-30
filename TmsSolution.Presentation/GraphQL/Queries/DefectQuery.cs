@@ -13,6 +13,21 @@ namespace TmsSolution.Presentation.GraphQL.Queries
     [ExtendObjectType("Query")]
     public class DefectQuery
     {
+        /// <summary>
+        /// Retrieves a paginated, sortable list of all defects in the system with optional filtering.
+        /// </summary>
+        /// <param name="user">The authenticated user, used for access validation.</param>
+        /// <param name="defectService">The service used to retrieve defect data.</param>
+        /// <param name="filter">Optional filtering criteria for narrowing down results.</param>
+        /// <returns>
+        /// A queryable collection of <see cref="DefectOutputDto"/> representing the defects.
+        /// </returns>
+        /// <remarks>
+        /// Authorization is required. Only users with the "Admin" role can access this query.
+        /// </remarks>
+        /// <exception cref="GraphQLException">
+        /// Thrown when an error occurs while retrieving defects.
+        /// </exception>
         [UsePaging]
         [UseProjection]
         [UseSorting]
@@ -60,6 +75,22 @@ namespace TmsSolution.Presentation.GraphQL.Queries
             }
         }
 
+        /// <summary>
+        /// Retrieves a paginated, sortable list of defects associated with a specific project, with optional filtering.
+        /// </summary>
+        /// <param name="projectId">The ID of the project whose defects are being requested.</param>
+        /// <param name="user">The authenticated user, used for access validation.</param>
+        /// <param name="defectService">The service used to retrieve defect data.</param>
+        /// <param name="filter">Optional filtering criteria for narrowing down results.</param>
+        /// <returns>
+        /// A queryable collection of <see cref="DefectOutputDto"/> for the specified project.
+        /// </returns>
+        /// <remarks>
+        /// Authorization is required. Accessible to all authenticated users with permission to the specified project.
+        /// </remarks>
+        /// <exception cref="GraphQLException">
+        /// Thrown when an error occurs while retrieving defects.
+        /// </exception>
         [UsePaging]
         [UseProjection]
         [UseSorting]
@@ -107,6 +138,21 @@ namespace TmsSolution.Presentation.GraphQL.Queries
             }
         }
 
+        /// <summary>
+        /// Retrieves a single defect by its unique identifier.
+        /// </summary>
+        /// <param name="id">The ID of the defect to retrieve.</param>
+        /// <param name="user">The authenticated user, used for access validation.</param>
+        /// <param name="defectService">The service used to retrieve the defect.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation. The task result contains the <see cref="DefectOutputDto"/>.
+        /// </returns>
+        /// <remarks>
+        /// Authorization is required. Accessible to all authenticated users with permission to the resource.
+        /// </remarks>
+        /// <exception cref="GraphQLException">
+        /// Thrown when the defect cannot be found or access is denied.
+        /// </exception>
         [Authorize]
         public async Task<DefectOutputDto> GetDefectById(
             Guid id,

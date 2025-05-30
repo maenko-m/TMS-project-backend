@@ -7,18 +7,20 @@ using System.Threading.Tasks;
 namespace TmsSolution.Application.Dtos.Auth
 {
     /// <summary>
-    /// Модель ответа на запрос аутентификации.
+    /// Data Transfer Object representing the result of a successful login.
     /// </summary>
     public class LoginResponseDto
     {
         /// <summary>
-        /// JWT-токен для аутентифицированного пользователя.
+        /// The JWT or access token issued after successful authentication.
         /// </summary>
+        /// <remarks>This token is used for authorizing subsequent requests.</remarks>
         public string Token { get; set; } = string.Empty;
 
         /// <summary>
-        /// Время истечения срока действия токена.
+        /// The expiration date and time of the issued token (in UTC).
         /// </summary>
+        /// <remarks>Clients should refresh or re-authenticate before this time to maintain access.</remarks>
         public DateTime ExpiresAt { get; set; }
     }
 }

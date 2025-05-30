@@ -11,6 +11,15 @@ namespace TmsSolution.Presentation.GraphQL.Queries
     [ExtendObjectType("Query")]
     public class TestStepQuery
     {
+        /// <summary>
+        /// Retrieves a paginated, sortable list of all test steps with optional filtering.
+        /// </summary>
+        /// <param name="user">The authenticated user, used for access validation.</param>
+        /// <param name="testStepService">The service used to retrieve test step data.</param>
+        /// <param name="filter">Optional filtering criteria to narrow down results.</param>
+        /// <returns>A queryable collection of <see cref="TestStepOutputDto"/> representing the test steps.</returns>
+        /// <remarks>Authorization is required. Only users with the "Admin" role can access this query.</remarks>
+        /// <exception cref="GraphQLException">Thrown when an error occurs while retrieving test steps.</exception>
         [UsePaging]
         [UseProjection]
         [UseSorting]
@@ -42,6 +51,16 @@ namespace TmsSolution.Presentation.GraphQL.Queries
             }
         }
 
+        /// <summary>
+        /// Retrieves a paginated, sortable list of test steps filtered by project ID with optional filtering.
+        /// </summary>
+        /// <param name="projectId">The ID of the project to filter test steps.</param>
+        /// <param name="user">The authenticated user, used for access validation.</param>
+        /// <param name="testStepService">The service used to retrieve test step data.</param>
+        /// <param name="filter">Optional filtering criteria to narrow down results.</param>
+        /// <returns>A queryable collection of <see cref="TestStepOutputDto"/> representing the test steps.</returns>
+        /// <remarks>Authorization is required.</remarks>
+        /// <exception cref="GraphQLException">Thrown when an error occurs while retrieving test steps.</exception>
         [UsePaging]
         [UseProjection]
         [UseSorting]
@@ -74,7 +93,15 @@ namespace TmsSolution.Presentation.GraphQL.Queries
             }
         }
 
-
+        /// <summary>
+        /// Retrieves a test step by its unique identifier.
+        /// </summary>
+        /// <param name="id">The unique identifier of the test step.</param>
+        /// <param name="user">The authenticated user, used for access validation.</param>
+        /// <param name="testStepService">The service used to retrieve test step data.</param>
+        /// <returns>A <see cref="TestStepOutputDto"/> representing the requested test step.</returns>
+        /// <remarks>Authorization is required.</remarks>
+        /// <exception cref="GraphQLException">Thrown when an error occurs while retrieving the test step.</exception>
         [Authorize]
         public async Task<TestStepOutputDto> GetTestStepById(
             Guid id,

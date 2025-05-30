@@ -26,6 +26,7 @@ using TmsSolution.Presentation.GraphQL.Types.Milestone;
 using TmsSolution.Presentation.GraphQL.Types.TestRun;
 using TmsSolution.Presentation.GraphQL.Types.TestRunTestCase;
 using TmsSolution.Presentation.GraphQL.Types.Attachment;
+using Microsoft.OpenApi.Models;
 
 namespace TmsSolution.Presentation
 {
@@ -217,10 +218,55 @@ namespace TmsSolution.Presentation
             builder.Services.AddAutoMapper(typeof(TestRunProfile));
             builder.Services.AddAutoMapper(typeof(AttachmentProfile));
 
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Мой API",
+                    Version = "v1",
+                    Description = "Документация REST API для авторизации и загрузки файлов"
+                });
+
+                c.DocInclusionPredicate((docName, apiDesc) =>
+                {
+                    return !apiDesc.RelativePath.Contains("graphql");
+                });
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Введите JWT-токен в формате: Bearer {token}",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
+
+                var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
 
             var app = builder.Build();
 
-            app.MapGet("/", () => "go to /graphql");
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
 
             app.UseCors("AllowAll");
 
@@ -228,8 +274,13 @@ namespace TmsSolution.Presentation
             app.UseAuthorization();
             app.MapControllers(); 
             app.MapGraphQL("/graphql");
-            
 
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Мой API v1");
+                c.RoutePrefix = "api/doc"; 
+            });
 
             app.Run();
         }

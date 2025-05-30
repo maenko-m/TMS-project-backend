@@ -11,6 +11,15 @@ namespace TmsSolution.Presentation.GraphQL.Queries
     [ExtendObjectType("Query")]
     public class ProjectQuery
     {
+        /// <summary>
+        /// Retrieves a paginated, sortable list of projects accessible to the authenticated user with optional filtering.
+        /// </summary>
+        /// <param name="user">The authenticated user, used for access validation.</param>
+        /// <param name="projectService">The service used to retrieve project data.</param>
+        /// <param name="filter">Optional filtering criteria to narrow down the results.</param>
+        /// <returns>A queryable collection of <see cref="ProjectOutputDto"/> representing the projects.</returns>
+        /// <remarks>Authorization is required. Accessible to all authenticated users with permission to the projects.</remarks>
+        /// <exception cref="GraphQLException">Thrown when an error occurs while retrieving projects.</exception>
         [UsePaging]
         [UseProjection]
         [UseSorting]
@@ -55,6 +64,15 @@ namespace TmsSolution.Presentation.GraphQL.Queries
             }
         }
 
+        /// <summary>
+        /// Retrieves a specific project by its unique identifier.
+        /// </summary>
+        /// <param name="id">The ID of the project to retrieve.</param>
+        /// <param name="user">The authenticated user, used for access validation.</param>
+        /// <param name="projectService">The service used to retrieve project data.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the <see cref="ProjectOutputDto"/>.</returns>
+        /// <remarks>Authorization is required. Accessible to all authenticated users with permission to the project.</remarks>
+        /// <exception cref="GraphQLException">Thrown when the project cannot be found or access is denied.</exception>
         [Authorize]
         public async Task<ProjectOutputDto> GetProjectById(
             Guid id,
