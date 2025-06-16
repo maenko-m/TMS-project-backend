@@ -39,7 +39,7 @@ namespace TmsSolution.Presentation.Controllers
                 var result = await _authService.AuthenticateAsync(loginRequest.Email, loginRequest.Password);
                 return Ok(result);
             }
-            catch (UnauthorizedAccessException)
+            catch (Exception)
             {
                 return Unauthorized(new { Message = "Invalid email or password" });
             }

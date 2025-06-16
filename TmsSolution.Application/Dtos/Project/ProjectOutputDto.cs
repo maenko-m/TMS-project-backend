@@ -15,6 +15,7 @@ namespace TmsSolution.Application.Dtos.Project
         public string OwnerFullName { get; set; } = string.Empty;
         public int ProjectUsersCount { get; set; }
         public int TestCasesCount { get; set; }
+        public List<Guid>? ProjectUserIds { get; set; }
         public int DefectsCount { get; set; }
     }
 }

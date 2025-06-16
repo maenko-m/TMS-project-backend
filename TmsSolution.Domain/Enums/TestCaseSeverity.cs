@@ -4,6 +4,8 @@
     {
         Minor, 
         Major, 
-        Critical
+        Critical,
+        Normal,
+        Trivial
     }
 }

@@ -32,9 +32,6 @@ namespace TmsSolution.Application.Services
                 .FirstOrDefault(u => u.Id == userId)
                 ?? throw new Exception("User not found");
 
-            if (currentUser.Role != UserRole.Admin)
-                throw new UnauthorizedAccessException($"Current user does not have access to all users.");
-
             return _userRepository.GetAll()
                 .Select(u => new UserOutputDto
                 {
@@ -54,9 +51,6 @@ namespace TmsSolution.Application.Services
                 .GetAll()
                 .FirstOrDefault(u => u.Id == userId)
                 ?? throw new Exception("User not found");
-
-            if (currentUser.Role != UserRole.Admin && id != userId)
-                throw new UnauthorizedAccessException($"Current user does not have access to user with ID {id}.");
 
             var users = await _userRepository.GetByIdAsync(id);
             return _mapper.Map<UserOutputDto>(users);

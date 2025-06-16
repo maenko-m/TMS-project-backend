@@ -15,9 +15,7 @@ namespace TmsSolution.Presentation.GraphQL.Mutations
         /// <param name="input">The data required to create the user.</param>
         /// <param name="userService">The service responsible for managing users.</param>
         /// <returns>True if the user was created successfully; otherwise, false.</returns>
-        /// <remarks>Authorization is required.</remarks>
         /// <exception cref="GraphQLException">Thrown when an error occurs during creation.</exception>
-        [Authorize]
         public async Task<bool> CreateUser(
             UserCreateDto input,
             [Service] IUserService userService)
@@ -70,6 +68,7 @@ namespace TmsSolution.Presentation.GraphQL.Mutations
         /// <returns>True if the user was deleted successfully; otherwise, false.</returns>
         /// <remarks>Authorization is required.</remarks>
         /// <exception cref="GraphQLException">Thrown when an error occurs during deletion.</exception>
+        [Authorize]
         public async Task<bool> DeleteUser(
             Guid id,
             ClaimsPrincipal user,

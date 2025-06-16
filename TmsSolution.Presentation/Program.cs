@@ -27,6 +27,7 @@ using TmsSolution.Presentation.GraphQL.Types.TestRun;
 using TmsSolution.Presentation.GraphQL.Types.TestRunTestCase;
 using TmsSolution.Presentation.GraphQL.Types.Attachment;
 using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.FileProviders;
 
 namespace TmsSolution.Presentation
 {
@@ -51,6 +52,7 @@ namespace TmsSolution.Presentation
                 .AddTypeExtension<TestPlanQuery>()
                 .AddTypeExtension<TestRunQuery>()
                 .AddTypeExtension<TestRunTestCaseQuery>()
+                .AddTypeExtension<AttachmentQuery>()
 
                 .AddMutationType(d => d.Name("Mutation"))
                 .AddTypeExtension<ProjectMutation>()
@@ -266,7 +268,15 @@ namespace TmsSolution.Presentation
             var app = builder.Build();
 
             app.UseDefaultFiles();
+
             app.UseStaticFiles();
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                     System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Uploads")),
+                RequestPath = "/Uploads"
+            });
 
             app.UseCors("AllowAll");
 
@@ -281,6 +291,8 @@ namespace TmsSolution.Presentation
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Мой API v1");
                 c.RoutePrefix = "api/doc"; 
             });
+
+            Console.WriteLine("CurrentDir: " + Directory.GetCurrentDirectory());
 
             app.Run();
         }

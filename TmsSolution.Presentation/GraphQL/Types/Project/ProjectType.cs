@@ -62,6 +62,11 @@ namespace TmsSolution.Presentation.GraphQL.Types.Project
                 .Description("The number of users associated with the project.");
 
             descriptor
+                .Field(p => p.ProjectUserIds)
+                .Type<ListType<NonNullType<IdType>>>()
+                .Description("The IDs of users project.");
+
+            descriptor
                 .Field(p => p.TestCasesCount)
                 .Type<NonNullType<IntType>>()
                 .Description("The number of test cases in the project.");

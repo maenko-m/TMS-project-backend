@@ -1,4 +1,5 @@
 ﻿using HotChocolate.Authorization;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using TmsSolution.Application.Dtos.Project;
 using TmsSolution.Application.Interfaces;
@@ -33,15 +34,16 @@ namespace TmsSolution.Presentation.GraphQL.Queries
             {
                 var userId = user.GetUserId();
 
-                var projects =  projectService.GetAll(userId);
-
+                var projects = projectService.GetAll(userId);
+                Console.WriteLine(projects.First().OwnerId);
                 if (filter != null)
                 {
                     if (!string.IsNullOrEmpty(filter.Name))
                     {
-                        projects = projects.Where(p => p.Name.Contains(filter.Name));
+                        var pattern = $"%{filter.Name}%";
+                        projects = projects.Where(p => EF.Functions.Like(p.Name, pattern));
                     }
-
+                    /*
                     if (filter.Involvement != null)
                     {
                         switch (filter.Involvement)
@@ -53,7 +55,7 @@ namespace TmsSolution.Presentation.GraphQL.Queries
                                 projects = projects.Where(p => p.OwnerId != userId);
                                 break;
                         }
-                    }
+                    }*/
                 }
 
                 return projects;

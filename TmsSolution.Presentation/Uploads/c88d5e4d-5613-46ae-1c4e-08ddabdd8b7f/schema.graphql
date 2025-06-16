@@ -1,0 +1,1784 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+"Represents a file attached to a project."
+type Attachment {
+  "The unique identifier of the attachment."
+  id: UUID!
+  "The ID of the project to which the file is attached."
+  projectId: UUID!
+  "The name of the file, including its extension."
+  fileName: String!
+  "The relative path to the file on the server."
+  fileUrl: String!
+  "The size of the file in bytes."
+  fileSize: Long!
+  "The MIME type of the file content (e.g., image\/png, application\/pdf)."
+  contentType: String!
+  "The UTC date and time when the file was uploaded."
+  createdAt: CustomDateTime!
+  "The ID of the user who uploaded the file."
+  uploadedById: UUID!
+}
+
+"Represents a defect found in the system."
+type Defect {
+  "The unique identifier of the defect."
+  id: ID!
+  "The ID of the project to which this defect belongs."
+  projectId: ID!
+  "Optional ID of the related test run."
+  testRunId: ID
+  "Optional ID of the related test case."
+  testCaseId: ID
+  "Title of the defect."
+  title: String!
+  "The actual result observed that led to the defect."
+  actualResult: String!
+  "Severity level of the defect."
+  severity: TestCaseSeverity!
+  "Timestamp when the defect was created."
+  createdAt: CustomDateTime!
+  "Timestamp when the defect was last updated."
+  updatedAt: CustomDateTime!
+  "ID of the user who created the defect."
+  createdById: ID!
+}
+
+"A connection to a list of items."
+type DefectsByProjectIdConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [DefectsByProjectIdEdge!]
+  "A flattened list of the nodes."
+  nodes: [Defect!]
+}
+
+"An edge in a connection."
+type DefectsByProjectIdEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Defect!
+}
+
+"A connection to a list of items."
+type DefectsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [DefectsEdge!]
+  "A flattened list of the nodes."
+  nodes: [Defect!]
+}
+
+"An edge in a connection."
+type DefectsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Defect!
+}
+
+"Represents a project milestone, used to group related work by a due date or goal."
+type Milestone {
+  "The unique identifier of the milestone."
+  id: ID!
+  "The ID of the project this milestone belongs to."
+  projectId: ID!
+  "Name of the milestone."
+  name: String!
+  "Optional description of the milestone."
+  description: String
+  "Optional due date by which the milestone should be completed."
+  dueDate: DateTime
+  "Date and time when the milestone was created."
+  createdAt: CustomDateTime!
+  "Date and time when the milestone was last updated."
+  updatedAt: CustomDateTime!
+  "Number of test runs associated with this milestone."
+  testRunsCount: Int!
+}
+
+"A connection to a list of items."
+type MilestonesByProjectIdConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [MilestonesByProjectIdEdge!]
+  "A flattened list of the nodes."
+  nodes: [Milestone!]
+}
+
+"An edge in a connection."
+type MilestonesByProjectIdEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Milestone!
+}
+
+"A connection to a list of items."
+type MilestonesConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [MilestonesEdge!]
+  "A flattened list of the nodes."
+  nodes: [Milestone!]
+}
+
+"An edge in a connection."
+type MilestonesEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Milestone!
+}
+
+type Mutation {
+  """
+  Creates a new project with the specified input data.
+  
+  
+  **Returns:**
+  True if the project was successfully created; otherwise, false.
+  """
+  createProject("The data required to create a project." input: ProjectCreateInput!): Boolean! @authorize @cost(weight: "10")
+  """
+  Updates an existing project identified by its unique identifier with the provided data.
+  
+  
+  **Returns:**
+  True if the project was successfully updated; otherwise, false.
+  """
+  updateProject("The unique identifier of the project to update." id: UUID! "The updated project data." input: ProjectUpdateInput!): Boolean! @authorize @cost(weight: "10")
+  """
+  Deletes a project identified by its unique identifier.
+  
+  
+  **Returns:**
+  True if the project was successfully deleted; otherwise, false.
+  """
+  deleteProject("The unique identifier of the project to delete." id: UUID!): Boolean! @authorize @cost(weight: "10")
+  """
+  Creates a new user with the specified input data.
+  
+  
+  **Returns:**
+  True if the user was created successfully; otherwise, false.
+  """
+  createUser("The data required to create the user." input: UserCreateInput!): Boolean! @authorize @cost(weight: "10")
+  """
+  Updates an existing user identified by its ID using the provided data.
+  
+  
+  **Returns:**
+  True if the user was updated successfully; otherwise, false.
+  """
+  updateUser("The unique identifier of the user to update." id: UUID! "The updated data for the user." input: UserUpdateInput!): Boolean! @authorize @cost(weight: "10")
+  """
+  Deletes an existing user identified by its unique ID.
+  
+  
+  **Returns:**
+  True if the user was deleted successfully; otherwise, false.
+  """
+  deleteUser("The unique identifier of the user to delete." id: UUID!): Boolean! @cost(weight: "10")
+  """
+  Creates a new test suite with the specified input data.
+  
+  
+  **Returns:**
+  True if the test suite was created successfully; otherwise, false.
+  """
+  createTestSuite("The data required to create the test suite." input: TestSuiteCreateInput!): Boolean! @authorize @cost(weight: "10")
+  """
+  Updates an existing test suite identified by its ID using the provided data.
+  
+  
+  **Returns:**
+  True if the test suite was updated successfully; otherwise, false.
+  """
+  updateTestSuite("The unique identifier of the test suite to update." id: UUID! "The updated data for the test suite." input: TestSuiteUpdateInput!): Boolean! @authorize @cost(weight: "10")
+  """
+  Deletes a test suite identified by its unique ID.
+  
+  
+  **Returns:**
+  True if the test suite was deleted successfully; otherwise, false.
+  """
+  deleteTestSuite("The unique identifier of the test suite to delete." id: UUID!): Boolean! @authorize @cost(weight: "10")
+  """
+  Creates a new test case using the specified input data.
+  
+  
+  **Returns:**
+  True if the test case was successfully created; otherwise, false.
+  """
+  createTestCase("The data required to create a test case." input: TestCaseCreateInput!): Boolean! @authorize @cost(weight: "10")
+  """
+  Updates an existing test case identified by its unique identifier with the provided data.
+  
+  
+  **Returns:**
+  True if the test case was successfully updated; otherwise, false.
+  """
+  updateTestCase("The unique identifier of the test case to update." id: UUID! "The updated test case data." input: TestCaseUpdateInput!): Boolean! @authorize @cost(weight: "10")
+  """
+  Deletes a test case identified by its unique identifier.
+  
+  
+  **Returns:**
+  True if the test case was successfully deleted; otherwise, false.
+  """
+  deleteTestCase("The unique identifier of the test case to delete." id: UUID!): Boolean! @authorize @cost(weight: "10")
+  """
+  Creates a new tag with the specified input data.
+  
+  
+  **Returns:**
+  True if the tag was successfully created; otherwise, false.
+  """
+  createTag("The data required to create a tag." input: TagCreateInput!): Boolean! @authorize @cost(weight: "10")
+  """
+  Updates an existing tag identified by its unique identifier with the provided data.
+  
+  
+  **Returns:**
+  True if the tag was successfully updated; otherwise, false.
+  """
+  updateTag("The unique identifier of the tag to update." id: UUID! "The updated tag data." input: TagUpdateInput!): Boolean! @authorize @cost(weight: "10")
+  """
+  Deletes a tag identified by its unique identifier.
+  
+  
+  **Returns:**
+  True if the tag was successfully deleted; otherwise, false.
+  """
+  deleteTag("The unique identifier of the tag to delete." id: UUID!): Boolean! @authorize @cost(weight: "10")
+  """
+  Creates a new defect based on the provided input data.
+  
+  
+  **Returns:**
+  True if the defect was successfully created; otherwise, false.
+  """
+  createDefect("The data required to create a defect." input: DefectCreateInput!): Boolean! @authorize @cost(weight: "10")
+  """
+  Updates an existing defect identified by its unique identifier with new data.
+  
+  
+  **Returns:**
+  True if the defect was successfully updated; otherwise, false.
+  """
+  updateDefect("The unique identifier of the defect to update." id: UUID! "The updated defect data." input: DefectUpdateInput!): Boolean! @authorize @cost(weight: "10")
+  """
+  Deletes a defect identified by its unique identifier.
+  
+  
+  **Returns:**
+  True if the defect was successfully deleted; otherwise, false.
+  """
+  deleteDefect("The unique identifier of the defect to delete." id: UUID!): Boolean! @authorize @cost(weight: "10")
+  """
+  Creates a new test step using the provided input data.
+  
+  
+  **Returns:**
+  True if the test step was created successfully; otherwise, false.
+  """
+  createTestStep("The data required to create the test step." input: TestStepCreateInput!): Boolean! @authorize @cost(weight: "10")
+  """
+  Updates an existing test step identified by its ID using the provided data.
+  
+  
+  **Returns:**
+  True if the test step was updated successfully; otherwise, false.
+  """
+  updateTestStep("The unique identifier of the test step to update." id: UUID! "The updated data for the test step." input: TestStepUpdateInput!): Boolean! @authorize @cost(weight: "10")
+  """
+  Deletes a test step identified by its unique ID.
+  
+  
+  **Returns:**
+  True if the test step was deleted successfully; otherwise, false.
+  """
+  deleteTestStep("The unique identifier of the test step to delete." id: UUID!): Boolean! @authorize @cost(weight: "10")
+  """
+  Creates a new milestone using the provided input data.
+  
+  
+  **Returns:**
+  True if the milestone was successfully created; otherwise, false.
+  """
+  createMilestone("The data required to create a milestone." input: MilestoneCreateInput!): Boolean! @authorize @cost(weight: "10")
+  """
+  Updates an existing milestone identified by its unique identifier with the provided data.
+  
+  
+  **Returns:**
+  True if the milestone was successfully updated; otherwise, false.
+  """
+  updateMilestone("The unique identifier of the milestone to update." id: UUID! "The updated milestone data." input: MilestoneUpdateInput!): Boolean! @authorize @cost(weight: "10")
+  """
+  Deletes a milestone identified by its unique identifier.
+  
+  
+  **Returns:**
+  True if the milestone was successfully deleted; otherwise, false.
+  """
+  deleteMilestone("The unique identifier of the milestone to delete." id: UUID!): Boolean! @authorize @cost(weight: "10")
+  """
+  Creates a new test plan using the specified input data.
+  
+  
+  **Returns:**
+  True if the test plan was successfully created; otherwise, false.
+  """
+  createTestPlan("The data required to create a test plan." input: TestPlanCreateInput!): Boolean! @authorize @cost(weight: "10")
+  """
+  Updates an existing test plan identified by its unique identifier with the provided data.
+  
+  
+  **Returns:**
+  True if the test plan was successfully updated; otherwise, false.
+  """
+  updateTestPlan("The unique identifier of the test plan to update." id: UUID! "The updated test plan data." input: TestPlanUpdateInput!): Boolean! @authorize @cost(weight: "10")
+  """
+  Deletes a test plan identified by its unique identifier.
+  
+  
+  **Returns:**
+  True if the test plan was successfully deleted; otherwise, false.
+  """
+  deleteTestPlan("The unique identifier of the test plan to delete." id: UUID!): Boolean! @authorize @cost(weight: "10")
+  """
+  Creates a new test run with the provided input data.
+  
+  
+  **Returns:**
+  True if the test run was created successfully; otherwise, false.
+  """
+  createTestRun("The data required to create the test run." input: TestRunCreateInput!): Boolean! @authorize @cost(weight: "10")
+  """
+  Updates an existing test run identified by its ID using the provided data.
+  
+  
+  **Returns:**
+  True if the test run was updated successfully; otherwise, false.
+  """
+  updateTestRun("The unique identifier of the test run to update." id: UUID! "The updated data for the test run." input: TestRunUpdateInput!): Boolean! @authorize @cost(weight: "10")
+  """
+  Deletes a test run identified by its unique ID.
+  
+  
+  **Returns:**
+  True if the test run was deleted successfully; otherwise, false.
+  """
+  deleteTestRun("The unique identifier of the test run to delete." id: UUID!): Boolean! @authorize @cost(weight: "10")
+  """
+  Creates a new test run test case using the provided input data.
+  
+  
+  **Returns:**
+  True if the test run test case was created successfully; otherwise, false.
+  """
+  createTestRunTestCase("The data required to create the test run test case." input: TestRunTestCaseCreateInput!): Boolean! @authorize @cost(weight: "10")
+  """
+  Updates an existing test run test case identified by its ID using the provided data.
+  
+  
+  **Returns:**
+  True if the test run test case was updated successfully; otherwise, false.
+  """
+  updateTestRunTestCase("The unique identifier of the test run test case to update." id: UUID! "The updated data for the test run test case." input: TestRunTestCaseUpdateInput!): Boolean! @authorize @cost(weight: "10")
+  """
+  Deletes a test run test case identified by its unique ID.
+  
+  
+  **Returns:**
+  True if the test run test case was deleted successfully; otherwise, false.
+  """
+  deleteTestRunTestCase("The unique identifier of the test run test case to delete." id: UUID!): Boolean! @authorize @cost(weight: "10")
+}
+
+"Information about pagination in a connection."
+type PageInfo {
+  "Indicates whether more edges exist following the set defined by the clients arguments."
+  hasNextPage: Boolean!
+  "Indicates whether more edges exist prior the set defined by the clients arguments."
+  hasPreviousPage: Boolean!
+  "When paginating backwards, the cursor to continue."
+  startCursor: String
+  "When paginating forwards, the cursor to continue."
+  endCursor: String
+}
+
+"A project entity with details and statistics."
+type Project {
+  "The unique identifier of the project."
+  id: ID!
+  "The name of the project."
+  name: String!
+  "The description of the project."
+  description: String
+  "The Base64-encoded icon of the project."
+  iconBase64: String
+  "The access type of the project (Public or Private)."
+  accessType: ProjectAccessType!
+  "The creation date of the project."
+  createdAt: CustomDateTime!
+  "The last update date of the project."
+  updatedAt: CustomDateTime!
+  "The ID of the project owner."
+  ownerId: ID!
+  "The full name of the project owner."
+  ownerFullName: String!
+  "The number of users associated with the project."
+  projectUsersCount: Int!
+  "The number of test cases in the project."
+  testCasesCount: Int!
+  "The number of defects in the project."
+  defectsCount: Int!
+}
+
+"A connection to a list of items."
+type ProjectsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [ProjectsEdge!]
+  "A flattened list of the nodes."
+  nodes: [Project!]
+}
+
+"An edge in a connection."
+type ProjectsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Project!
+}
+
+type Query {
+  """
+  Retrieves a paginated, sortable list of projects accessible to the authenticated user with optional filtering.
+  
+  
+  **Returns:**
+  A queryable collection of ProjectOutputDto representing the projects.
+  """
+  projects("Optional filtering criteria to narrow down the results." filter: ProjectFilter "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [ProjectOutputDtoSortInput!] @cost(weight: "10")): ProjectsConnection @authorize @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  """
+  Retrieves a specific project by its unique identifier.
+  
+  
+  **Returns:**
+  A task that represents the asynchronous operation. The task result contains the ProjectOutputDto.
+  """
+  projectById("The ID of the project to retrieve." id: UUID!): Project! @authorize @cost(weight: "10")
+  """
+  Retrieves a paginated, filterable, and sortable list of users accessible by the authenticated user.
+  
+  
+  **Returns:**
+  A queryable collection of UserOutputDto representing the users.
+  """
+  users("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: UserOutputDtoFilterInput @cost(weight: "10") order: [UserOutputDtoSortInput!] @cost(weight: "10")): UsersConnection @authorize @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  """
+  Retrieves a user by their unique identifier.
+  
+  
+  **Returns:**
+  A UserOutputDto representing the requested user.
+  """
+  userById("The unique identifier of the user." id: UUID!): User! @authorize @cost(weight: "10")
+  """
+  Retrieves the current authenticated user's information.
+  
+  
+  **Returns:**
+  A UserOutputDto representing the current user.
+  """
+  me: User! @authorize @authorize @cost(weight: "10")
+  """
+  Retrieves a paginated, sortable list of all test suites with optional filtering.
+  
+  
+  **Returns:**
+  A queryable collection of TestSuiteOutputDto representing the test suites.
+  """
+  testSuites("Optional filtering criteria to narrow down results." filter: TestSuiteFilterInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [TestSuiteOutputDtoSortInput!] @cost(weight: "10")): TestSuitesConnection @authorize(roles: [ "Admin" ]) @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  """
+  Retrieves a paginated, sortable list of test suites filtered by project ID with optional filtering.
+  
+  
+  **Returns:**
+  A queryable collection of TestSuiteOutputDto representing the test suites.
+  """
+  testSuitesByProjectId("The ID of the project to filter test suites." projectId: UUID! "Optional filtering criteria to narrow down results." filter: TestSuiteFilterInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [TestSuiteOutputDtoSortInput!] @cost(weight: "10")): TestSuitesByProjectIdConnection @authorize @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  """
+  Retrieves a test suite by its unique identifier.
+  
+  
+  **Returns:**
+  A TestSuiteOutputDto representing the requested test suite.
+  """
+  testSuiteById("The unique identifier of the test suite." id: UUID!): TestSuite! @authorize @cost(weight: "10")
+  """
+  Retrieves a paginated, sortable list of all test cases with optional filtering.
+  
+  
+  **Returns:**
+  A queryable collection of TestCaseOutputDto representing the test cases.
+  """
+  testCases("Optional filtering criteria to narrow down results." filter: TestCaseFilterInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [TestCaseOutputDtoSortInput!] @cost(weight: "10")): TestCasesConnection @authorize(roles: [ "Admin" ]) @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  """
+  Retrieves a paginated, sortable list of test cases for a specific project with optional filtering.
+  
+  
+  **Returns:**
+  A queryable collection of TestCaseOutputDto for the specified project.
+  """
+  testCasesByProjectId("The ID of the project to retrieve test cases from." projectId: UUID! "Optional filtering criteria to narrow down results." filter: TestCaseFilterInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [TestCaseOutputDtoSortInput!] @cost(weight: "10")): TestCasesByProjectIdConnection @authorize @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  """
+  Retrieves a specific test case by its unique identifier.
+  
+  
+  **Returns:**
+  A task that represents the asynchronous operation. The task result contains the TestCaseOutputDto.
+  """
+  testCaseById("The ID of the test case to retrieve." id: UUID!): TestCase! @authorize @cost(weight: "10")
+  """
+  Retrieves a paginated, sortable list of tags with optional filtering.
+  
+  
+  **Returns:**
+  A queryable collection of TagOutputDto representing the tags.
+  """
+  tags("Optional filtering criteria to narrow down results." filter: TagFilterInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [TagOutputDtoSortInput!] @cost(weight: "10")): TagsConnection @authorize @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  """
+  Retrieves a specific tag by its unique identifier.
+  
+  
+  **Returns:**
+  A task that represents the asynchronous operation. The task result contains the TagOutputDto.
+  """
+  tagById("The ID of the tag to retrieve." id: UUID!): Tag! @authorize @cost(weight: "10")
+  """
+  Retrieves a paginated, sortable list of all defects in the system with optional filtering.
+  
+  
+  **Returns:**
+  
+  A queryable collection of DefectOutputDto representing the defects.
+  """
+  defects("Optional filtering criteria for narrowing down results." filter: DefectFilterInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [DefectOutputDtoSortInput!] @cost(weight: "10")): DefectsConnection @authorize(roles: [ "Admin" ]) @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  """
+  Retrieves a paginated, sortable list of defects associated with a specific project, with optional filtering.
+  
+  
+  **Returns:**
+  
+  A queryable collection of DefectOutputDto for the specified project.
+  """
+  defectsByProjectId("The ID of the project whose defects are being requested." projectId: UUID! "Optional filtering criteria for narrowing down results." filter: DefectFilterInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [DefectOutputDtoSortInput!] @cost(weight: "10")): DefectsByProjectIdConnection @authorize @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  """
+  Retrieves a single defect by its unique identifier.
+  
+  
+  **Returns:**
+  
+  A task that represents the asynchronous operation. The task result contains the DefectOutputDto.
+  """
+  defectById("The ID of the defect to retrieve." id: UUID!): Defect! @authorize @cost(weight: "10")
+  """
+  Retrieves a paginated, sortable list of all test steps with optional filtering.
+  
+  
+  **Returns:**
+  A queryable collection of TestStepOutputDto representing the test steps.
+  """
+  testSteps("Optional filtering criteria to narrow down results." filter: TestStepFilterInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [TestStepOutputDtoSortInput!] @cost(weight: "10")): TestStepsConnection @authorize(roles: [ "Admin" ]) @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  """
+  Retrieves a paginated, sortable list of test steps filtered by project ID with optional filtering.
+  
+  
+  **Returns:**
+  A queryable collection of TestStepOutputDto representing the test steps.
+  """
+  testStepsByProjectId("The ID of the project to filter test steps." projectId: UUID! "Optional filtering criteria to narrow down results." filter: TestStepFilterInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [TestStepOutputDtoSortInput!] @cost(weight: "10")): TestStepsByProjectIdConnection @authorize @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  """
+  Retrieves a test step by its unique identifier.
+  
+  
+  **Returns:**
+  A TestStepOutputDto representing the requested test step.
+  """
+  testStepById("The unique identifier of the test step." id: UUID!): TestStep! @authorize @cost(weight: "10")
+  """
+  Retrieves a paginated, sortable list of all milestones in the system with optional filtering.
+  
+  
+  **Returns:**
+  A queryable collection of MilestoneOutputDto representing the milestones.
+  """
+  milestones("Optional filtering criteria to narrow down results." filter: MilestoneFilterInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [MilestoneOutputDtoSortInput!] @cost(weight: "10")): MilestonesConnection @authorize(roles: [ "Admin" ]) @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  """
+  Retrieves a paginated, sortable list of milestones for a specific project with optional filtering.
+  
+  
+  **Returns:**
+  A queryable collection of MilestoneOutputDto for the specified project.
+  """
+  milestonesByProjectId("The ID of the project to retrieve milestones from." projectId: UUID! "Optional filtering criteria to narrow down results." filter: MilestoneFilterInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [MilestoneOutputDtoSortInput!] @cost(weight: "10")): MilestonesByProjectIdConnection @authorize @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  """
+  Retrieves a specific milestone by its unique identifier.
+  
+  
+  **Returns:**
+  A task that represents the asynchronous operation. The task result contains the MilestoneOutputDto.
+  """
+  milestoneById("The ID of the milestone to retrieve." id: UUID!): Milestone! @authorize @cost(weight: "10")
+  """
+  Retrieves a paginated, sortable list of all test plans with optional filtering.
+  
+  
+  **Returns:**
+  A queryable collection of TestPlanOutputDto representing the test plans.
+  """
+  testPlans("Optional filtering criteria to narrow down results." filter: TestPlanFilterInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [TestPlanOutputDtoSortInput!] @cost(weight: "10")): TestPlansConnection @authorize(roles: [ "Admin" ]) @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  """
+  Retrieves a paginated, sortable list of test plans for a specific project with optional filtering.
+  
+  
+  **Returns:**
+  A queryable collection of TestPlanOutputDto for the specified project.
+  """
+  testPlansByProjectId("The ID of the project to retrieve test plans from." projectId: UUID! "Optional filtering criteria to narrow down results." filter: TestPlanFilterInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [TestPlanOutputDtoSortInput!] @cost(weight: "10")): TestPlansByProjectIdConnection @authorize @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  """
+  Retrieves a specific test plan by its unique identifier.
+  
+  
+  **Returns:**
+  A task that represents the asynchronous operation. The task result contains the TestPlanOutputDto.
+  """
+  testPlanById("The ID of the test plan to retrieve." id: UUID!): TestPlan! @authorize @cost(weight: "10")
+  """
+  Retrieves a paginated, sortable list of all test runs with optional filtering.
+  
+  
+  **Returns:**
+  A queryable collection of TestRunOutputDto.
+  """
+  testRuns("Optional filter criteria for the test runs." filter: TestRunFilterInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [TestRunOutputDtoSortInput!] @cost(weight: "10")): TestRunsConnection @authorize(roles: [ "Admin" ]) @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  """
+  Retrieves a paginated, sortable list of test runs for a specific project with optional filtering.
+  
+  
+  **Returns:**
+  A queryable collection of TestRunOutputDto for the specified project.
+  """
+  testRunsByProjectId("The ID of the project to retrieve test runs for." projectId: UUID! "Optional filter criteria for the test runs." filter: TestRunFilterInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [TestRunOutputDtoSortInput!] @cost(weight: "10")): TestRunsByProjectIdConnection @authorize @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  """
+  Retrieves a specific test run by its unique identifier.
+  
+  
+  **Returns:**
+  A task that represents the asynchronous operation. The task result contains the TestRunOutputDto.
+  """
+  testRunById("The ID of the test run to retrieve." id: UUID!): TestRun! @authorize @cost(weight: "10")
+  """
+  Retrieves a paged, filtered, and sorted list of test run test cases associated with a specific test run ID.
+  Requires user authorization and checks access to the requested test run resources.
+  
+  
+  **Returns:**
+  An IQueryable`1 representing the filtered test run test cases.
+  """
+  testRunTestCasesByTestRunId("The unique identifier of the test run to retrieve test cases for." testRunId: UUID! "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [TestRunTestCaseOutputDtoSortInput!] @cost(weight: "10")): TestRunTestCasesByTestRunIdConnection @authorize @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  """
+  Retrieves a single test run test case by its unique identifier.
+  Requires user authorization and verifies user access to the specific test run test case resource.
+  
+  
+  **Returns:**
+  A TestRunTestCaseOutputDto representing the requested test run test case.
+  """
+  testRunTestCaseById("The unique identifier of the test run test case." id: UUID!): TestRunTestCase! @authorize @cost(weight: "10")
+}
+
+"Represents a tag that can be attached to other entities."
+type Tag {
+  "Unique identifier of the tag."
+  id: ID!
+  "Name of the tag."
+  name: String!
+  "Date and time the tag was created."
+  createdAt: CustomDateTime!
+}
+
+"A connection to a list of items."
+type TagsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [TagsEdge!]
+  "A flattened list of the nodes."
+  nodes: [Tag!]
+}
+
+"An edge in a connection."
+type TagsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Tag!
+}
+
+"Represents a test case."
+type TestCase {
+  "The unique identifier of the test case."
+  id: ID!
+  "The ID of the project this test case belongs to."
+  projectId: ID!
+  "The ID of the test suite (optional)."
+  suiteId: ID
+  "The title of the test case."
+  title: String!
+  "A description of the test case."
+  description: String
+  "Preconditions for executing the test case."
+  preconditions: String
+  "Postconditions after executing the test case."
+  postconditions: String
+  "The status of the test case."
+  status: TestCaseStatus!
+  "The priority of the test case."
+  priority: TestCasePriority!
+  "The severity level of the test case."
+  severity: TestCaseSeverity!
+  "The creation date of the test case."
+  createdAt: CustomDateTime!
+  "The last update date of the test case."
+  updatedAt: CustomDateTime!
+  "The ID of the user who created the test case."
+  createdById: ID!
+  "Custom parameters in JSON format."
+  parameters: String
+  "Additional custom fields in JSON format."
+  customFields: String
+  "Tags associated with the test case."
+  tags: [Tag]
+  "Steps included in the test case."
+  steps: [TestStep]
+  "Linked defects to the test case."
+  defects: [Defect]
+}
+
+"A connection to a list of items."
+type TestCasesByProjectIdConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [TestCasesByProjectIdEdge!]
+  "A flattened list of the nodes."
+  nodes: [TestCase!]
+}
+
+"An edge in a connection."
+type TestCasesByProjectIdEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: TestCase!
+}
+
+"A connection to a list of items."
+type TestCasesConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [TestCasesEdge!]
+  "A flattened list of the nodes."
+  nodes: [TestCase!]
+}
+
+"An edge in a connection."
+type TestCasesEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: TestCase!
+}
+
+"Represents a test plan containing multiple test cases to validate software quality."
+type TestPlan {
+  "The unique identifier of the test plan."
+  id: ID!
+  "The ID of the project associated with this test plan."
+  projectId: ID!
+  "The name of the test plan."
+  name: String!
+  "An optional description of the test plan."
+  description: String
+  "Date and time when the test plan was created."
+  createdAt: CustomDateTime!
+  "Date and time when the test plan was last updated."
+  updatedAt: CustomDateTime!
+  "List of test cases associated with this test plan."
+  testCases: [TestCase!]
+  createdById: UUID!
+}
+
+"A connection to a list of items."
+type TestPlansByProjectIdConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [TestPlansByProjectIdEdge!]
+  "A flattened list of the nodes."
+  nodes: [TestPlan!]
+}
+
+"An edge in a connection."
+type TestPlansByProjectIdEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: TestPlan!
+}
+
+"A connection to a list of items."
+type TestPlansConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [TestPlansEdge!]
+  "A flattened list of the nodes."
+  nodes: [TestPlan!]
+}
+
+"An edge in a connection."
+type TestPlansEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: TestPlan!
+}
+
+"Represents a test run."
+type TestRun {
+  "Unique identifier of the test run."
+  id: ID!
+  "ID of the related project."
+  projectId: ID!
+  "Name of the test run."
+  name: String!
+  "Description of the test run."
+  description: String
+  "Environment where the test run is executed."
+  environment: String
+  "Optional milestone ID."
+  milestoneId: ID
+  "Current status of the test run."
+  status: TestRunStatus!
+  "Optional start time."
+  startTime: CustomDateTime
+  "Optional end time."
+  endTime: CustomDateTime
+  "Creation timestamp."
+  createdAt: CustomDateTime!
+  "Last update timestamp."
+  updatedAt: CustomDateTime!
+  "Associated tags."
+  tags: [Tag]
+  "Test cases within the test run."
+  testRunTestCases: [TestRunTestCase]
+  "Defects linked to the run."
+  defects: [Defect]
+}
+
+"Represents a test case inside a test run."
+type TestRunTestCase {
+  "Unique identifier."
+  id: ID!
+  "ID of the test run."
+  testRunId: ID!
+  "Related test case."
+  testCase: TestCase!
+  "Execution status."
+  status: TestRunTestCaseStatus!
+  "Comment related to the execution."
+  comment: String
+  "Execution duration in seconds."
+  executionTime: Int!
+  "Creation timestamp."
+  createdAt: CustomDateTime!
+  "Last update timestamp."
+  updatedAt: CustomDateTime!
+}
+
+"A connection to a list of items."
+type TestRunTestCasesByTestRunIdConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [TestRunTestCasesByTestRunIdEdge!]
+  "A flattened list of the nodes."
+  nodes: [TestRunTestCase!]
+}
+
+"An edge in a connection."
+type TestRunTestCasesByTestRunIdEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: TestRunTestCase!
+}
+
+"A connection to a list of items."
+type TestRunsByProjectIdConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [TestRunsByProjectIdEdge!]
+  "A flattened list of the nodes."
+  nodes: [TestRun!]
+}
+
+"An edge in a connection."
+type TestRunsByProjectIdEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: TestRun!
+}
+
+"A connection to a list of items."
+type TestRunsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [TestRunsEdge!]
+  "A flattened list of the nodes."
+  nodes: [TestRun!]
+}
+
+"An edge in a connection."
+type TestRunsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: TestRun!
+}
+
+"Represents a step in a test case."
+type TestStep {
+  "The unique identifier of the test step."
+  id: ID!
+  "The ID of the test case this step belongs to."
+  testCaseId: ID!
+  "A description of the test step."
+  description: String!
+  "Expected result of the step."
+  expectedResult: String
+  "The order or position of the step."
+  position: Int!
+  "Date and time when the step was created."
+  createdAt: CustomDateTime!
+  "Date and time when the step was last updated."
+  updatedAt: CustomDateTime!
+}
+
+"A connection to a list of items."
+type TestStepsByProjectIdConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [TestStepsByProjectIdEdge!]
+  "A flattened list of the nodes."
+  nodes: [TestStep!]
+}
+
+"An edge in a connection."
+type TestStepsByProjectIdEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: TestStep!
+}
+
+"A connection to a list of items."
+type TestStepsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [TestStepsEdge!]
+  "A flattened list of the nodes."
+  nodes: [TestStep!]
+}
+
+"An edge in a connection."
+type TestStepsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: TestStep!
+}
+
+"Represents a test suite within a project."
+type TestSuite {
+  "The unique identifier of the test suite."
+  id: ID!
+  "The identifier of the project this test suite belongs to."
+  projectId: ID!
+  "The name of the test suite."
+  name: String!
+  "The optional description of the test suite."
+  description: String
+  "The optional preconditions for the test suite."
+  preconditions: String
+  "The date and time when the test suite was created."
+  createdAt: CustomDateTime!
+  "The date and time when the test suite was last updated."
+  updatedAt: CustomDateTime!
+  "The number of test cases in this test suite."
+  testCasesCount: Int!
+}
+
+"A connection to a list of items."
+type TestSuitesByProjectIdConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [TestSuitesByProjectIdEdge!]
+  "A flattened list of the nodes."
+  nodes: [TestSuite!]
+}
+
+"An edge in a connection."
+type TestSuitesByProjectIdEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: TestSuite!
+}
+
+"A connection to a list of items."
+type TestSuitesConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [TestSuitesEdge!]
+  "A flattened list of the nodes."
+  nodes: [TestSuite!]
+}
+
+"An edge in a connection."
+type TestSuitesEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: TestSuite!
+}
+
+"Represents a user of the system."
+type User {
+  "The unique identifier of the user."
+  id: ID!
+  "The full name of the user (first and last name combined)."
+  fullName: String!
+  "The email address of the user."
+  email: String!
+  "The Base64-encoded profile icon of the user."
+  iconBase64: String
+  "The role of the user in the system."
+  role: UserRole!
+  "The date and time the user was created."
+  createdAt: CustomDateTime!
+  "The date and time the user was last updated."
+  updatedAt: CustomDateTime!
+}
+
+"A connection to a list of items."
+type UsersConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [UsersEdge!]
+  "A flattened list of the nodes."
+  nodes: [User!]
+}
+
+"An edge in a connection."
+type UsersEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: User!
+}
+
+input DateTimeOperationFilterInput {
+  eq: DateTime @cost(weight: "10")
+  neq: DateTime @cost(weight: "10")
+  in: [DateTime] @cost(weight: "10")
+  nin: [DateTime] @cost(weight: "10")
+  gt: DateTime @cost(weight: "10")
+  ngt: DateTime @cost(weight: "10")
+  gte: DateTime @cost(weight: "10")
+  ngte: DateTime @cost(weight: "10")
+  lt: DateTime @cost(weight: "10")
+  nlt: DateTime @cost(weight: "10")
+  lte: DateTime @cost(weight: "10")
+  nlte: DateTime @cost(weight: "10")
+}
+
+"Input for creating a new defect."
+input DefectCreateInput {
+  projectId: ID!
+  testRunId: ID
+  testCaseId: ID
+  title: String!
+  actualResult: String!
+  severity: TestCaseSeverity!
+  createdById: ID!
+}
+
+input DefectFilterInput {
+  title: String
+  testRunId: UUID
+  testCaseId: UUID
+  severity: TestCaseSeverity
+}
+
+input DefectOutputDtoSortInput {
+  id: SortEnumType @cost(weight: "10")
+  projectId: SortEnumType @cost(weight: "10")
+  testRunId: SortEnumType @cost(weight: "10")
+  testCaseId: SortEnumType @cost(weight: "10")
+  title: SortEnumType @cost(weight: "10")
+  actualResult: SortEnumType @cost(weight: "10")
+  severity: SortEnumType @cost(weight: "10")
+  createdAt: SortEnumType @cost(weight: "10")
+  updatedAt: SortEnumType @cost(weight: "10")
+  createdById: SortEnumType @cost(weight: "10")
+}
+
+"Input for updating an existing defect."
+input DefectUpdateInput {
+  projectId: ID!
+  testRunId: ID
+  testCaseId: ID
+  title: String
+  actualResult: String
+  severity: TestCaseSeverity
+  createdById: ID!
+}
+
+"Input type for creating a new milestone."
+input MilestoneCreateInput {
+  "ID of the project this milestone belongs to."
+  projectId: ID!
+  "Name of the milestone."
+  name: String!
+  "Optional description for the milestone."
+  description: String
+  "Optional due date of the milestone."
+  dueDate: DateTime
+}
+
+input MilestoneFilterInput {
+  name: String
+  isHavingTestRuns: Boolean
+  isActual: Boolean
+}
+
+input MilestoneOutputDtoSortInput {
+  id: SortEnumType @cost(weight: "10")
+  projectId: SortEnumType @cost(weight: "10")
+  name: SortEnumType @cost(weight: "10")
+  description: SortEnumType @cost(weight: "10")
+  dueDate: SortEnumType @cost(weight: "10")
+  createdAt: SortEnumType @cost(weight: "10")
+  updatedAt: SortEnumType @cost(weight: "10")
+  testRunsCount: SortEnumType @cost(weight: "10")
+}
+
+"Input type for updating an existing milestone."
+input MilestoneUpdateInput {
+  "Updated project ID if reassigned."
+  projectId: ID
+  "Updated name of the milestone."
+  name: String
+  "Updated description of the milestone."
+  description: String
+  "Updated due date of the milestone."
+  dueDate: DateTime
+}
+
+"Input type for creating a project."
+input ProjectCreateInput {
+  "The name of the project (required, max 100 characters)."
+  name: String!
+  "The description of the project (max 500 characters)."
+  description: String
+  "The access type of the project (Public or Private, required)."
+  accessType: ProjectAccessType!
+  "The ID of the project owner (required)."
+  ownerId: ID!
+  "List of user IDs to associate with the project (required for private projects)."
+  projectUserIds: [Int!]
+  "Path to the project icon file."
+  iconPath: String
+}
+
+input ProjectFilter {
+  "Filter projects by substring in the name"
+  name: String
+  "Filter projects by involvement: Owner or Participant"
+  involvement: ProjectInvolvement
+}
+
+input ProjectOutputDtoSortInput {
+  id: SortEnumType @cost(weight: "10")
+  name: SortEnumType @cost(weight: "10")
+  description: SortEnumType @cost(weight: "10")
+  iconBase64: SortEnumType @cost(weight: "10")
+  accessType: SortEnumType @cost(weight: "10")
+  createdAt: SortEnumType @cost(weight: "10")
+  updatedAt: SortEnumType @cost(weight: "10")
+  ownerId: SortEnumType @cost(weight: "10")
+  ownerFullName: SortEnumType @cost(weight: "10")
+  projectUsersCount: SortEnumType @cost(weight: "10")
+  testCasesCount: SortEnumType @cost(weight: "10")
+  defectsCount: SortEnumType @cost(weight: "10")
+}
+
+"Input type for updating a project."
+input ProjectUpdateInput {
+  "The name of the project (optional, max 100 characters)."
+  name: String
+  "The description of the project (optional, max 500 characters)."
+  description: String
+  "The access type of the project (Public or Private, optional)."
+  accessType: ProjectAccessType
+  "The ID of the project owner (optional)."
+  ownerId: ID
+  "List of user IDs to associate with the project (optional)."
+  projectUserIds: [Int!]
+  "Path to the project icon file (optional, max 500 characters)."
+  iconPath: String
+}
+
+input StringOperationFilterInput {
+  and: [StringOperationFilterInput!]
+  or: [StringOperationFilterInput!]
+  eq: String @cost(weight: "10")
+  neq: String @cost(weight: "10")
+  contains: String @cost(weight: "20")
+  ncontains: String @cost(weight: "20")
+  in: [String] @cost(weight: "10")
+  nin: [String] @cost(weight: "10")
+  startsWith: String @cost(weight: "20")
+  nstartsWith: String @cost(weight: "20")
+  endsWith: String @cost(weight: "20")
+  nendsWith: String @cost(weight: "20")
+}
+
+"Input type for creating a tag."
+input TagCreateInput {
+  "Name of the tag to be created."
+  name: String!
+}
+
+input TagFilterInput {
+  name: String
+}
+
+input TagOutputDtoSortInput {
+  id: SortEnumType @cost(weight: "10")
+  name: SortEnumType @cost(weight: "10")
+  createdAt: SortEnumType @cost(weight: "10")
+}
+
+"Input type for updating a tag."
+input TagUpdateInput {
+  "New name of the tag."
+  name: String
+}
+
+input TestCaseCreateInput {
+  "The ID of the project."
+  projectId: ID!
+  "The ID of the test suite."
+  suiteId: ID
+  "The title of the test case."
+  title: String!
+  "A description of the test case."
+  description: String
+  "Preconditions for the test case."
+  preconditions: String
+  "Postconditions for the test case."
+  postconditions: String
+  "Status of the test case."
+  status: TestCaseStatus!
+  "Priority of the test case."
+  priority: TestCasePriority!
+  "Severity of the test case."
+  severity: TestCaseSeverity!
+  "ID of the user who created the test case."
+  createdById: ID!
+  "Custom parameters in JSON."
+  parameters: String
+  "Custom fields in JSON."
+  customFields: String
+  "List of tag IDs to include in the test case."
+  tagIds: [ID!]
+  "List of defects IDs to include in the test case."
+  defectIds: [ID!]
+  "List of test steps IDs to include in the test case."
+  stepIds: [ID!]
+}
+
+input TestCaseFilterInput {
+  title: String
+  suiteId: UUID
+  isHavingDefects: Boolean
+  tagIds: [UUID!]
+}
+
+input TestCaseOutputDtoSortInput {
+  id: SortEnumType @cost(weight: "10")
+  projectId: SortEnumType @cost(weight: "10")
+  suiteId: SortEnumType @cost(weight: "10")
+  title: SortEnumType @cost(weight: "10")
+  description: SortEnumType @cost(weight: "10")
+  preconditions: SortEnumType @cost(weight: "10")
+  postconditions: SortEnumType @cost(weight: "10")
+  status: SortEnumType @cost(weight: "10")
+  priority: SortEnumType @cost(weight: "10")
+  severity: SortEnumType @cost(weight: "10")
+  createdAt: SortEnumType @cost(weight: "10")
+  updatedAt: SortEnumType @cost(weight: "10")
+  createdById: SortEnumType @cost(weight: "10")
+  parameters: SortEnumType @cost(weight: "10")
+  customFields: SortEnumType @cost(weight: "10")
+}
+
+input TestCaseUpdateInput {
+  "ID of the project."
+  projectId: ID
+  "ID of the test suite."
+  suiteId: ID
+  "Title of the test case."
+  title: String
+  "Description of the test case."
+  description: String
+  "Preconditions for the test case."
+  preconditions: String
+  "Postconditions of the test case."
+  postconditions: String
+  "Status of the test case."
+  status: TestCaseStatus
+  "Priority of the test case."
+  priority: TestCasePriority
+  "Severity of the test case."
+  severity: TestCaseSeverity
+  "ID of the creator."
+  createdById: ID
+  "Custom parameters in JSON format."
+  parameters: String
+  "Custom fields in JSON format."
+  customFields: String
+  "List of tag IDs to include in the test case."
+  tagIds: [ID!]
+  "List of defects IDs to include in the test case."
+  defectIds: [ID!]
+  "List of test steps IDs to include in the test case."
+  stepIds: [ID!]
+}
+
+"Input type for creating a new test plan."
+input TestPlanCreateInput {
+  "The ID of the project for which the test plan is created."
+  projectId: ID!
+  "The name of the test plan."
+  name: String!
+  "An optional description for the test plan."
+  description: String
+  "List of test case IDs to include in the test plan."
+  testCaseIds: [ID!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  createdById: UUID!
+}
+
+input TestPlanFilterInput {
+  name: String
+}
+
+input TestPlanOutputDtoSortInput {
+  id: SortEnumType @cost(weight: "10")
+  projectId: SortEnumType @cost(weight: "10")
+  name: SortEnumType @cost(weight: "10")
+  description: SortEnumType @cost(weight: "10")
+  createdAt: SortEnumType @cost(weight: "10")
+  updatedAt: SortEnumType @cost(weight: "10")
+  createdById: SortEnumType @cost(weight: "10")
+}
+
+"Input type for updating an existing test plan."
+input TestPlanUpdateInput {
+  "The updated name of the test plan."
+  name: String
+  "The updated description of the test plan."
+  description: String
+  "The updated list of test case IDs associated with the test plan."
+  testCaseIds: [ID!]
+  projectId: UUID
+  createdAt: DateTime
+  updatedAt: DateTime
+  createdById: UUID
+}
+
+"Input data required to create a new test run."
+input TestRunCreateInput {
+  "ID of the project where the test run is created."
+  projectId: ID!
+  "Name of the test run."
+  name: String!
+  "Optional description of the test run."
+  description: String
+  "Environment in which the test run will be executed."
+  environment: String
+  "Optional milestone linked to this test run."
+  milestoneId: ID
+  "Initial status of the test run."
+  status: TestRunStatus!
+  "List of tag IDs to associate with the test run."
+  tagIds: [ID!]
+  "List of test case IDs to include in the test run."
+  testRunTestCaseIds: [ID!]
+  "List of defect IDs linked to the test run."
+  defectIds: [ID!]
+}
+
+input TestRunFilterInput {
+  name: String
+  milestoneId: UUID
+  status: TestRunStatus
+  isCompleted: Boolean
+}
+
+input TestRunOutputDtoSortInput {
+  id: SortEnumType @cost(weight: "10")
+  projectId: SortEnumType @cost(weight: "10")
+  name: SortEnumType @cost(weight: "10")
+  description: SortEnumType @cost(weight: "10")
+  environment: SortEnumType @cost(weight: "10")
+  milestoneId: SortEnumType @cost(weight: "10")
+  status: SortEnumType @cost(weight: "10")
+  startTime: SortEnumType @cost(weight: "10")
+  endTime: SortEnumType @cost(weight: "10")
+  createdAt: SortEnumType @cost(weight: "10")
+  updatedAt: SortEnumType @cost(weight: "10")
+}
+
+"Input data to add a new test case to a test run."
+input TestRunTestCaseCreateInput {
+  "ID of the test run to add the case to."
+  testRunId: ID!
+  "ID of the test case being added."
+  testCaseId: ID!
+  "Execution status for this test case."
+  status: TestRunTestCaseStatus!
+  "Optional comment for this test run test case."
+  comment: String
+  "Execution time in seconds."
+  executionTime: Int!
+}
+
+input TestRunTestCaseOutputDtoSortInput {
+  id: SortEnumType @cost(weight: "10")
+  testRunId: SortEnumType @cost(weight: "10")
+  testCase: TestCaseOutputDtoSortInput @cost(weight: "10")
+  status: SortEnumType @cost(weight: "10")
+  comment: SortEnumType @cost(weight: "10")
+  executionTime: SortEnumType @cost(weight: "10")
+  createdAt: SortEnumType @cost(weight: "10")
+  updatedAt: SortEnumType @cost(weight: "10")
+}
+
+"Input data to update an existing test run test case."
+input TestRunTestCaseUpdateInput {
+  "Updated test run ID (optional)."
+  testRunId: ID
+  "Updated test case ID (optional)."
+  testCaseId: ID
+  "Updated status."
+  status: TestRunTestCaseStatus
+  "Updated comment."
+  comment: String
+  "Updated execution time in seconds."
+  executionTime: Int
+}
+
+"Input data for updating an existing test run."
+input TestRunUpdateInput {
+  "Updated project ID (optional)."
+  projectId: ID
+  "Updated name of the test run."
+  name: String
+  "Updated description."
+  description: String
+  "Updated environment."
+  environment: String
+  "Updated milestone ID."
+  milestoneId: ID
+  "Updated status of the test run."
+  status: TestRunStatus
+  "Updated list of tag IDs."
+  tagIds: [ID!]
+  "Updated list of test case IDs."
+  testRunTestCaseIds: [ID!]
+  "Updated list of defect IDs."
+  defectIds: [ID!]
+}
+
+input TestStepCreateInput {
+  "The ID of the test case this step belongs to."
+  testCaseId: ID!
+  "A description of the test step."
+  description: String!
+  "Expected result of the step."
+  expectedResult: String
+  "The order or position of the step."
+  position: Int!
+}
+
+input TestStepFilterInput {
+  testCaseId: UUID
+}
+
+input TestStepOutputDtoSortInput {
+  id: SortEnumType @cost(weight: "10")
+  testCaseId: SortEnumType @cost(weight: "10")
+  description: SortEnumType @cost(weight: "10")
+  expectedResult: SortEnumType @cost(weight: "10")
+  position: SortEnumType @cost(weight: "10")
+  createdAt: SortEnumType @cost(weight: "10")
+  updatedAt: SortEnumType @cost(weight: "10")
+}
+
+input TestStepUpdateInput {
+  "The ID of the test case this step belongs to."
+  testCaseId: ID
+  "A description of the test step."
+  description: String
+  "Expected result of the step."
+  expectedResult: String
+  "The order or position of the step."
+  position: Int
+}
+
+"Input type for creating a test suite."
+input TestSuiteCreateInput {
+  "Project ID for the new test suite."
+  projectId: ID!
+  "Name of the new test suite."
+  name: String!
+  "Optional description."
+  description: String
+  "Optional preconditions."
+  preconditions: String
+}
+
+input TestSuiteFilterInput {
+  name: String
+}
+
+input TestSuiteOutputDtoSortInput {
+  id: SortEnumType @cost(weight: "10")
+  projectId: SortEnumType @cost(weight: "10")
+  name: SortEnumType @cost(weight: "10")
+  description: SortEnumType @cost(weight: "10")
+  preconditions: SortEnumType @cost(weight: "10")
+  createdAt: SortEnumType @cost(weight: "10")
+  updatedAt: SortEnumType @cost(weight: "10")
+  testCasesCount: SortEnumType @cost(weight: "10")
+}
+
+"Input type for updating a test suite."
+input TestSuiteUpdateInput {
+  "Project ID of the test suite."
+  projectId: ID
+  "Name of the test suite."
+  name: String
+  "Optional description."
+  description: String
+  "Optional preconditions."
+  preconditions: String
+}
+
+"Input type for creating a new user."
+input UserCreateInput {
+  "The first name of the user (required, max 50 characters)."
+  firstName: String!
+  "The last name of the user (required, max 50 characters)."
+  lastName: String!
+  "The email address of the user (required, max 100 characters)."
+  email: String!
+  "The password for the user account (required, must meet complexity requirements)."
+  password: String!
+  "The path to the user profile icon (optional)."
+  iconPath: String
+}
+
+input UserOutputDtoFilterInput {
+  and: [UserOutputDtoFilterInput!]
+  or: [UserOutputDtoFilterInput!]
+  id: UuidOperationFilterInput
+  fullName: StringOperationFilterInput
+  email: StringOperationFilterInput
+  iconBase64: StringOperationFilterInput
+  role: UserRoleOperationFilterInput
+  createdAt: DateTimeOperationFilterInput
+  updatedAt: DateTimeOperationFilterInput
+}
+
+input UserOutputDtoSortInput {
+  id: SortEnumType @cost(weight: "10")
+  fullName: SortEnumType @cost(weight: "10")
+  email: SortEnumType @cost(weight: "10")
+  iconBase64: SortEnumType @cost(weight: "10")
+  role: SortEnumType @cost(weight: "10")
+  createdAt: SortEnumType @cost(weight: "10")
+  updatedAt: SortEnumType @cost(weight: "10")
+}
+
+input UserRoleOperationFilterInput {
+  eq: UserRole @cost(weight: "10")
+  neq: UserRole @cost(weight: "10")
+  in: [UserRole!] @cost(weight: "10")
+  nin: [UserRole!] @cost(weight: "10")
+}
+
+"Input type for updating user information."
+input UserUpdateInput {
+  "The updated first name of the user (optional, max 50 characters)."
+  firstName: String
+  "The updated last name of the user (optional, max 50 characters)."
+  lastName: String
+  "The updated email address of the user (optional, max 100 characters)."
+  email: String
+  "The new password for the user account (optional, must meet complexity requirements)."
+  password: String
+  "The updated path to the user profile icon (optional)."
+  iconPath: String
+}
+
+input UuidOperationFilterInput {
+  eq: UUID @cost(weight: "10")
+  neq: UUID @cost(weight: "10")
+  in: [UUID] @cost(weight: "10")
+  nin: [UUID] @cost(weight: "10")
+  gt: UUID @cost(weight: "10")
+  ngt: UUID @cost(weight: "10")
+  gte: UUID @cost(weight: "10")
+  ngte: UUID @cost(weight: "10")
+  lt: UUID @cost(weight: "10")
+  nlt: UUID @cost(weight: "10")
+  lte: UUID @cost(weight: "10")
+  nlte: UUID @cost(weight: "10")
+}
+
+"Defines when a policy shall be executed."
+enum ApplyPolicy {
+  "Before the resolver was executed."
+  BEFORE_RESOLVER
+  "After the resolver was executed."
+  AFTER_RESOLVER
+  "The policy is applied in the validation step before the execution."
+  VALIDATION
+}
+
+"The access type of a project (Public or Private)."
+enum ProjectAccessType {
+  PUBLIC
+  PRIVATE
+}
+
+"The type of a project involvement: Owner or Participant"
+enum ProjectInvolvement {
+  OWNER
+  PARTICIPANT
+}
+
+enum SortEnumType {
+  ASC
+  DESC
+}
+
+enum TestCasePriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum TestCaseSeverity {
+  MINOR
+  MAJOR
+  CRITICAL
+}
+
+enum TestCaseStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum TestRunStatus {
+  ACTIVE
+  COMPLETED
+  ABORTED
+}
+
+enum TestRunTestCaseStatus {
+  PASSED
+  FAILED
+  BLOCKED
+  SKIPPED
+  INVALID
+}
+
+enum UserRole {
+  REGULAR
+  ADMIN
+}
+
+"The authorize directive."
+directive @authorize("The name of the authorization policy that determines access to the annotated resource." policy: String "Roles that are allowed to access the annotated resource." roles: [String!] "Defines when when the authorize directive shall be applied.By default the authorize directives are applied during the validation phase." apply: ApplyPolicy! = BEFORE_RESOLVER) repeatable on OBJECT | FIELD_DEFINITION
+
+"The purpose of the `cost` directive is to define a `weight` for GraphQL types, fields, and arguments. Static analysis can use these weights when calculating the overall cost of a query or response."
+directive @cost("The `weight` argument defines what value to add to the overall cost for every appearance, or possible appearance, of a type, field, argument, etc." weight: String!) on SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | ENUM | INPUT_FIELD_DEFINITION
+
+"The purpose of the `@listSize` directive is to either inform the static analysis about the size of returned lists (if that information is statically available), or to point the analysis to where to find that information."
+directive @listSize("The `assumedSize` argument can be used to statically define the maximum length of a list returned by a field." assumedSize: Int "The `slicingArguments` argument can be used to define which of the field's arguments with numeric type are slicing arguments, so that their value determines the size of the list returned by that field. It may specify a list of multiple slicing arguments." slicingArguments: [String!] "The `slicingArgumentDefaultValue` argument can be used to define a default value for a slicing argument, which is used if the argument is not present in a query." slicingArgumentDefaultValue: Int "The `sizedFields` argument can be used to define that the value of the `assumedSize` argument or of a slicing argument does not affect the size of a list returned by a field itself, but that of a list returned by one of its sub-fields." sizedFields: [String!] "The `requireOneSlicingArgument` argument can be used to inform the static analysis that it should expect that exactly one of the defined slicing arguments is present in a query. If that is not the case (i.e., if none or multiple slicing arguments are present), the static analysis may throw an error." requireOneSlicingArgument: Boolean! = true) on FIELD_DEFINITION
+
+"The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
+directive @specifiedBy("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
+
+scalar CustomDateTime
+
+"The `DateTime` scalar represents an ISO-8601 compliant date time type."
+scalar DateTime @specifiedBy(url: "https:\/\/www.graphql-scalars.com\/date-time")
+
+"The `Long` scalar type represents non-fractional signed whole 64-bit numeric values. Long can represent values between -(2^63) and 2^63 - 1."
+scalar Long
+
+scalar UUID @specifiedBy(url: "https:\/\/tools.ietf.org\/html\/rfc4122")

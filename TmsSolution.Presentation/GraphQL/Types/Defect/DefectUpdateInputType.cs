@@ -9,13 +9,13 @@ namespace TmsSolution.Presentation.GraphQL.Types.Defect
         {
             descriptor.Name("DefectUpdateInput").Description("Input for updating an existing defect.");
 
-            descriptor.Field(f => f.ProjectId).Type<NonNullType<IdType>>();
+            descriptor.Field(f => f.ProjectId).Type<IdType>();
             descriptor.Field(f => f.TestRunId).Type<IdType>();
             descriptor.Field(f => f.TestCaseId).Type<IdType>();
             descriptor.Field(f => f.Title).Type<StringType>();
             descriptor.Field(f => f.ActualResult).Type<StringType>();
             descriptor.Field(f => f.Severity).Type<EnumType<TestCaseSeverity>>();
-            descriptor.Field(f => f.CreatedById).Type<NonNullType<IdType>>();
+            descriptor.Field(f => f.CreatedById).Type<IdType>();
         }
     }
 }

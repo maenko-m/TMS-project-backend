@@ -41,7 +41,15 @@ namespace TmsSolution.Application.Mapping
                     opt.PreCondition(src => !string.IsNullOrWhiteSpace(src.Password));
                     opt.MapFrom(src => PasswordHasher.Hash(src.Password!));
                 })
-                .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+                .ForAllMembers(opt => opt.Condition((src, dest, srcMember, context) =>
+                {
+                    if (srcMember == null) return false;
+
+                    if (srcMember is Guid guid && guid == Guid.Empty)
+                        return false;
+
+                    return true;
+                }));
         }
     }
 }

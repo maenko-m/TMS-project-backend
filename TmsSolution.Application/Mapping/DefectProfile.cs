@@ -35,7 +35,15 @@ namespace TmsSolution.Application.Mapping
                 .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
                 .ForMember(dest => dest.Attachments, opt => opt.Ignore())
                 .ForMember(dest => dest.CustomFields, opt => opt.Ignore())
-                .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+                .ForAllMembers(opt => opt.Condition((src, dest, srcMember, context) =>
+                {
+                    if (srcMember == null) return false;
+
+                    if (srcMember is Guid guid && guid == Guid.Empty)
+                        return false;
+
+                    return true;
+                }));
         }
     }
 }

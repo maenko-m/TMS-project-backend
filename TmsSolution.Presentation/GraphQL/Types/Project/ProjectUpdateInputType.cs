@@ -32,7 +32,7 @@ namespace TmsSolution.Presentation.GraphQL.Types.Project
 
             descriptor
                 .Field(p => p.ProjectUserIds)
-                .Type<ListType<NonNullType<IntType>>>()
+                .Type<ListType<NonNullType<IdType>>>()
                 .Description("List of user IDs to associate with the project (optional).");
 
             descriptor

@@ -67,6 +67,7 @@ namespace TmsSolution.Application.Services
                     OwnerId = p.OwnerId,
                     OwnerFullName = p.Owner != null ? $"{p.Owner.FirstName} {p.Owner.LastName}" : "",
                     ProjectUsersCount = p.ProjectUsers.Count,
+                    ProjectUserIds = p.ProjectUsers.Select(pu => pu.Id).ToList(),
                     TestCasesCount = p.TestCases.Count,
                     DefectsCount = p.Defects.Count
                 });
@@ -83,7 +84,11 @@ namespace TmsSolution.Application.Services
             if (!project.HasAccess(userId))
                 throw new UnauthorizedAccessException($"User does not have access to project with ID {id}.");
 
-            return _mapper.Map<ProjectOutputDto>(project);
+            var data = _mapper.Map<ProjectOutputDto>(project);
+
+            data.ProjectUserIds = project.ProjectUsers.Select(pu => pu.Id).ToList();
+            
+            return data;
         }
 
         public async Task<bool> AddAsync(ProjectCreateDto projectDto)
