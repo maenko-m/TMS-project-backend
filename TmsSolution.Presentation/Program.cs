@@ -28,6 +28,7 @@ using TmsSolution.Presentation.GraphQL.Types.TestRunTestCase;
 using TmsSolution.Presentation.GraphQL.Types.Attachment;
 using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Options;
 
 namespace TmsSolution.Presentation
 {
@@ -138,7 +139,8 @@ namespace TmsSolution.Presentation
                 var auditInterceptor = serviceProvider.GetRequiredService<AuditInterceptor>();
 
                 options.UseSqlServer(connectionString)
-                       .AddInterceptors(auditInterceptor);
+                       .AddInterceptors(auditInterceptor)
+                       .EnableSensitiveDataLogging();
             });
 
             builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
@@ -200,6 +202,7 @@ namespace TmsSolution.Presentation
             builder.Services.AddScoped<IDefectService, DefectService>();
             builder.Services.AddScoped<ITestStepService, TestStepService>();
             builder.Services.AddScoped<IMilestoneService, MilestoneService>();
+            builder.Services.AddScoped<ITestPlanService, TestPlanService>();
             builder.Services.AddScoped<ITestRunTestCaseService, TestRunTestCaseService>();
             builder.Services.AddScoped<ITestRunService, TestRunService>();
             builder.Services.AddScoped<IAttachmentService, AttachmentService>();

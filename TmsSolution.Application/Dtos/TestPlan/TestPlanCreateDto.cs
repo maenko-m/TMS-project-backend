@@ -18,8 +18,6 @@ namespace TmsSolution.Application.Dtos.TestPlan
 
         [StringLength(255, ErrorMessage = "Test plan name cannot exceed 255 characters.")]
         public string? Description { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
         public Guid CreatedById { get; set; }
 
         public List<Guid>? TestCaseIds { get; set; } = new();

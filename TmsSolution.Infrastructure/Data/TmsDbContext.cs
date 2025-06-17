@@ -17,8 +17,6 @@ namespace TmsSolution.Infrastructure.Data
         public DbSet<TestCase> TestCases { get; set; }
         public DbSet<TestSuite> TestSuites { get; set; }
         public DbSet<TestStep> TestSteps { get; set; }
-        public DbSet<SharedStep> SharedSteps { get; set; }
-        public DbSet<TestCaseSharedStep> TestCaseSharedSteps { get; set; }
         public DbSet<TestRun> TestRuns { get; set; }
         public DbSet<TestRunTestCase> TestRunTestCases { get; set; }
         public DbSet<Defect> Defects { get; set; }
@@ -84,30 +82,6 @@ namespace TmsSolution.Infrastructure.Data
                 .WithMany(tc => tc.Steps)
                 .HasForeignKey(ts => ts.TestCaseId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            // SharedStep: связь с проектом и создателем
-            modelBuilder.Entity<SharedStep>()
-                .HasOne(ss => ss.Project)
-                .WithMany(p => p.SharedSteps)
-                .HasForeignKey(ss => ss.ProjectId)
-                .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<SharedStep>()
-                .HasOne(ss => ss.CreatedBy)
-                .WithMany(u => u.CreatedSharedSteps)
-                .HasForeignKey(ss => ss.CreatedById)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // TestCaseSharedStep: связь тест-кейса и общего шага
-            modelBuilder.Entity<TestCaseSharedStep>()
-                .HasOne(tcss => tcss.TestCase)
-                .WithMany(tc => tc.SharedSteps)
-                .HasForeignKey(tcss => tcss.TestCaseId)
-                .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<TestCaseSharedStep>()
-                .HasOne(tcss => tcss.SharedStep)
-                .WithMany(ss => ss.TestCaseSharedSteps)
-                .HasForeignKey(tcss => tcss.SharedStepId)
-                .OnDelete(DeleteBehavior.Restrict);
 
             // TestRun: связь с проектом, вехой и ответственным
             modelBuilder.Entity<TestRun>()
@@ -208,5 +182,5 @@ namespace TmsSolution.Infrastructure.Data
         }
     }
     //dotnet ef database update --startup-project ../TmsSolution.Presentation
-    //dotnet ef migrations add "Attachments as list" --startup-project ../TmsSolution.Presentation
+    //dotnet ef migrations add "final12" --startup-project ../TmsSolution.Presentation
 }

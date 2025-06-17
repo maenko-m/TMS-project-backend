@@ -98,13 +98,17 @@ namespace TmsSolution.Application.Services
             return _mapper.Map<TestStepOutputDto>(testStep);
         }
 
-        public async Task<bool> AddAsync(TestStepCreateDto testStepDto)
+        public async Task<Guid> AddAsync(TestStepCreateDto testStepDto)
         {
             Validator.Validate(testStepDto);
 
             var testStep = _mapper.Map<TestStep>(testStepDto);
 
-            return await _testStepRepository.AddAsync(testStep);
+            testStep.Id = Guid.NewGuid();
+
+            await _testStepRepository.AddAsync(testStep);
+
+            return testStep.Id;
         }
 
         public async Task<bool> UpdateAsync(Guid id, TestStepUpdateDto testStepDto, Guid userId)

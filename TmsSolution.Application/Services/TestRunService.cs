@@ -14,6 +14,7 @@ using TmsSolution.Domain.Entities;
 using TmsSolution.Domain.Enums;
 using TmsSolution.Infrastructure.Data.Interfaces;
 using TmsSolution.Infrastructure.Data.Repositories;
+using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 
 namespace TmsSolution.Application.Services
 {
@@ -24,7 +25,7 @@ namespace TmsSolution.Application.Services
         private readonly IProjectRepository _projectRepository;
         private readonly IMapper _mapper;
 
-        public TestRunService(ITestRunRepository testRunRepository, IUserRepository userRepository, IProjectRepository projectRepository, IMapper mapper)
+        public TestRunService(ITestRunRepository testRunRepository, IUserRepository userRepository, IProjectRepository projectRepository, IDefectRepository defectRepository, IMapper mapper)
         {
             _testRunRepository = testRunRepository;
             _userRepository = userRepository;
@@ -82,7 +83,7 @@ namespace TmsSolution.Application.Services
             return _mapper.Map<TestRunOutputDto>(testRun);
         }
 
-        public async Task<bool> AddAsync(TestRunCreateDto testRunDto)
+        public async Task<Guid> AddAsync(TestRunCreateDto testRunDto)
         {
             Validator.Validate(testRunDto);
 
@@ -113,18 +114,21 @@ namespace TmsSolution.Application.Services
 
             if (testRunDto.DefectIds != null && testRunDto.DefectIds.Count != 0)
             {
-                testRun.Defects = testRunDto.DefectIds
-                    .Distinct()
-                    .Select(id => new Defect 
-                    { 
-                        Id = id 
-                    })
-                    .ToList();
+                foreach (var defectId in testRunDto.DefectIds)
+                {
+                    var defect = new Defect { Id = defectId };
+                    _testRunRepository.Attach(defect); 
+                    testRun.Defects.Add(defect);
+                }
             }
 
             testRun.StartTime = DateTime.UtcNow;
 
-            return await _testRunRepository.AddAsync(testRun);
+            testRun.Id = Guid.NewGuid();
+
+            await _testRunRepository.AddAsync(testRun);
+
+            return testRun.Id;
         }
 
         public async Task<bool> UpdateAsync(Guid id, TestRunUpdateDto testRunDto, Guid userId)

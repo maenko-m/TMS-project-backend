@@ -13,11 +13,17 @@ namespace TmsSolution.Infrastructure.Data.Repositories
     {
         public TestRunRepository(TmsDbContext context) : base(context) { }
 
+        public void Attach(Defect defect)
+        {
+            _context.Attach(defect);
+        }
+
         public IQueryable<TestRun> GetAll()
         {
             return _context.TestRuns
                 .Include(tr => tr.Tags)
                 .Include(tr => tr.TestRunTestCases)
+                    .ThenInclude(trts => trts.TestCase)
                 .Include(tr => tr.Defects)
                 .Include(tr => tr.Project)
                     .ThenInclude(p => p.ProjectUsers)
@@ -29,6 +35,7 @@ namespace TmsSolution.Infrastructure.Data.Repositories
             return await _context.TestRuns
                 .Include(tr => tr.Tags)
                 .Include(tr => tr.TestRunTestCases)
+                    .ThenInclude(trts => trts.TestCase)
                 .Include(tr => tr.Defects)
                 .Include(tr => tr.Project)
                     .ThenInclude(p => p.ProjectUsers)

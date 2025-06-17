@@ -13,7 +13,7 @@ namespace TmsSolution.Application.Interfaces
         IQueryable<TestCaseOutputDto> GetAll(Guid userId);
         IQueryable<TestCaseOutputDto> GetAllByProjectId(Guid projectId, Guid userId);
         Task<TestCaseOutputDto> GetByIdAsync(Guid id, Guid userId);
-        Task<bool> AddAsync(TestCaseCreateDto testCaseDto);
+        Task<Guid> AddAsync(TestCaseCreateDto testCaseDto);
         Task<bool> UpdateAsync(Guid id, TestCaseUpdateDto testCaseDto, Guid userId);
         Task<bool> DeleteAsync(Guid id, Guid userId);
     }

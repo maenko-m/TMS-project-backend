@@ -28,7 +28,6 @@ namespace TmsSolution.Application.Mapping
                 .ForMember(dest => dest.OwnedProjects, opt => opt.Ignore())
                 .ForMember(dest => dest.ProjectUsers, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedTestCases, opt => opt.Ignore())
-                .ForMember(dest => dest.CreatedSharedSteps, opt => opt.Ignore())
                 .ForMember(dest => dest.AssignedTestRuns, opt => opt.Ignore())
                 .ForMember(dest => dest.AssignedTestRunTestCases, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedDefects, opt => opt.Ignore())

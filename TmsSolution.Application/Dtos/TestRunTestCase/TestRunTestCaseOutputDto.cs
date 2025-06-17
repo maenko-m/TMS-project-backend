@@ -14,7 +14,7 @@ namespace TmsSolution.Application.Dtos.TestRunTestCase
     {
         public Guid Id { get; set; }
         public Guid TestRunId { get; set; }
-        public required TestCaseOutputDto TestCase { get; set; }
+        public TestCaseOutputDto TestCase { get; set; }
         public TestRunTestCaseStatus Status { get; set; }
         public string? Comment { get; set; }
         public int ExecutionTime { get; set; }

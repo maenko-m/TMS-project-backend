@@ -22,13 +22,15 @@ namespace TmsSolution.Application.Services
         private readonly ITestPlanRepository _testPlanRepository;
         private readonly IUserRepository _userRepository;
         private readonly IProjectRepository _projectRepository;
+        private readonly ITestCaseRepository _testCaseRepository;
         private readonly IMapper _mapper;
 
-        public TestPlanService(ITestPlanRepository testPlanRepository, IUserRepository userRepository, IProjectRepository projectRepository, IMapper mapper)
+        public TestPlanService(ITestPlanRepository testPlanRepository, IUserRepository userRepository, IProjectRepository projectRepository, ITestCaseRepository testCaseRepository, IMapper mapper)
         {
             _testPlanRepository = testPlanRepository;
             _userRepository = userRepository;
             _projectRepository = projectRepository;
+            _testCaseRepository = testCaseRepository;
             _mapper = mapper;
         }
 

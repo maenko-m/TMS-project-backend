@@ -27,7 +27,6 @@ namespace TmsSolution.Application.Mapping
                 .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
                 .ForMember(dest => dest.Attachments, opt => opt.Ignore())
                 .ForMember(dest => dest.Defects, opt => opt.Ignore())
-                .ForMember(dest => dest.SharedSteps, opt => opt.Ignore())
                 .ForMember(dest => dest.TestRunTestCases, opt => opt.Ignore())
                 .ForMember(dest => dest.TestPlanTestCases, opt => opt.Ignore());
 
@@ -40,7 +39,6 @@ namespace TmsSolution.Application.Mapping
                 .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
                 .ForMember(dest => dest.Attachments, opt => opt.Ignore())
                 .ForMember(dest => dest.Defects, opt => opt.Ignore())
-                .ForMember(dest => dest.SharedSteps, opt => opt.Ignore())
                 .ForMember(dest => dest.TestRunTestCases, opt => opt.Ignore())
                 .ForMember(dest => dest.TestPlanTestCases, opt => opt.Ignore())
                 .ForAllMembers(opt => opt.Condition((src, dest, srcMember, context) =>

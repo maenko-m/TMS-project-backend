@@ -19,7 +19,7 @@ namespace TmsSolution.Presentation.GraphQL.Mutations
         /// <remarks>Authorization is required.</remarks>
         /// <exception cref="GraphQLException">Thrown when an error occurs during test case creation.</exception>
         [Authorize]
-        public async Task<bool> CreateTestCase(
+        public async Task<Guid> CreateTestCase(
             TestCaseCreateDto input,
             [Service] ITestCaseService testCaseService)
         {

@@ -17,6 +17,8 @@ namespace TmsSolution.Infrastructure.Data.Repositories
         {
             return _context.TestSuites
                 .Include(ts => ts.TestCases)
+                .Include(ts => ts.Project)
+                    .ThenInclude(p => p.ProjectUsers)
                 .AsNoTracking();
         }
 
@@ -24,6 +26,8 @@ namespace TmsSolution.Infrastructure.Data.Repositories
         {
             return await _context.TestSuites
                 .Include(ts => ts.TestCases)
+                .Include(ts => ts.Project)
+                    .ThenInclude(p => p.ProjectUsers)
                 .FirstOrDefaultAsync(ts => ts.Id == id)
                 ?? throw new Exception($"Test suite with ID {id} not found.");
         }

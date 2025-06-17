@@ -48,7 +48,6 @@ namespace TmsSolution.Domain.Entities
 
         public List<Tag> Tags { get; set; } = new();
         public List<TestStep> Steps { get; set; } = new();
-        public List<TestCaseSharedStep> SharedSteps { get; set; } = new();
         public List<TestRunTestCase> TestRunTestCases { get; set; } = new();
         public List<Defect> Defects { get; set; } = new();
         public List<TestPlanTestCase> TestPlanTestCases { get; set; } = new();

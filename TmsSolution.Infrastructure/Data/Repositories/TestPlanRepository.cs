@@ -18,6 +18,7 @@ namespace TmsSolution.Infrastructure.Data.Repositories
             return _context.TestPlans
                 .Include(tp => tp.Project)
                 .Include(tp => tp.TestPlanTestCases)
+                    .ThenInclude(tpts => tpts.TestCase)
                 .AsNoTracking();
         }
 
@@ -26,6 +27,7 @@ namespace TmsSolution.Infrastructure.Data.Repositories
             return await _context.TestPlans
                 .Include(tp => tp.Project)
                 .Include(tp => tp.TestPlanTestCases)
+                    .ThenInclude(tpts => tpts.TestCase)
                 .FirstOrDefaultAsync(tp => tp.Id == id)
                 ?? throw new Exception($"Test plan with ID {id} not found."); ; ;
         }

@@ -25,7 +25,6 @@ namespace TmsSolution.Application.Mapping
                 .ForMember(dest => dest.TestCases, opt => opt.Ignore())
                 .ForMember(dest => dest.TestSuites, opt => opt.Ignore())
                 .ForMember(dest => dest.TestRuns, opt => opt.Ignore())
-                .ForMember(dest => dest.SharedSteps, opt => opt.Ignore())
                 .ForMember(dest => dest.Defects, opt => opt.Ignore())
                 .ForMember(dest => dest.Attachments, opt => opt.Ignore())
                 .ForMember(dest => dest.TestPlans, opt => opt.Ignore())

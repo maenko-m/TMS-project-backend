@@ -84,7 +84,7 @@ namespace TmsSolution.Application.Services
             return _mapper.Map<TestCaseOutputDto>(testCase);
         }
 
-        public async Task<bool> AddAsync(TestCaseCreateDto testCaseDto)
+        public async Task<Guid> AddAsync(TestCaseCreateDto testCaseDto)
         {
             Validator.Validate(testCaseDto);
 
@@ -123,7 +123,11 @@ namespace TmsSolution.Application.Services
                     .ToList();
             }
 
-            return await _testCaseRepository.AddAsync(testCase);
+            testCase.Id = Guid.NewGuid();
+
+            await _testCaseRepository.AddAsync(testCase);
+
+            return testCase.Id;
         }
 
         public async Task<bool> UpdateAsync(Guid id, TestCaseUpdateDto testCaseDto, Guid userId)

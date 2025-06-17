@@ -36,7 +36,6 @@ namespace TmsSolution.Domain.Entities
         public List<TestCase> TestCases { get; set; } = new();
         public List<TestSuite> TestSuites { get; set; } = new();
         public List<TestRun> TestRuns { get; set; } = new();
-        public List<SharedStep> SharedSteps { get; set; } = new();
         public List<Defect> Defects { get; set; } = new();
         public List<Attachment> Attachments { get; set; } = new();
         public List<TestPlan> TestPlans { get; set; } = new();
